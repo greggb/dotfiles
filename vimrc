@@ -1,4 +1,5 @@
 " .vimrc
+" via csswizardry https://github.com/csswizardry/dotfiles
 
 " No compatibility
 set nocompatible
