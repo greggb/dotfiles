@@ -47,25 +47,35 @@ function install_syntax_highlighting {
 }
 
 function install_prompt_pure {
-# Test to see if zshell is installed.  If it is:
-if [ -f /bin/zsh -o -f /usr/bin/zsh ]; then
-    # run npm install command for Prompt Pure
-    if [[ ! -d /usr/local/share/zsh/site-functions/prompt_pure_setup ]]; then
-        npm install --global pure-prompt
+    # Test to see if zshell is installed.  If it is:
+    if [ -f /bin/zsh -o -f /usr/bin/zsh ]; then
+        # run npm install command for Prompt Pure
+        if [[ ! -d /usr/local/share/zsh/site-functions/prompt_pure_setup ]]; then
+            npm install --global pure-prompt
+        fi
+        # Set the default shell to zsh if it isn't currently set to zsh
+        if [[ ! $(echo $SHELL) == $(which zsh) ]]; then
+            chsh -s $(which zsh)
+        fi
+    else
+        # If zsh isn't installed, get the platform of the current machine
+        platform=$(uname);
+        # If the platform is OS X, tell the user to install zsh :)
+        if [[ $platform == 'Darwin' ]]; then
+            echo "Please install zsh, then re-run this script!"
+            exit
+        fi
     fi
-    # Set the default shell to zsh if it isn't currently set to zsh
-    if [[ ! $(echo $SHELL) == $(which zsh) ]]; then
-        chsh -s $(which zsh)
+}
+
+function install_terminal_theme {
+    if [[ ! -d $dir/tomorrow-theme-master/ ]]; then
+        git clone https://github.com/chriskempson/tomorrow-theme.git
+        if [[ $dir/tomorrow-theme/ ]]; then
+            open "$dir/tomorrow-theme/OS X Terminal/Tomorrow Night Eighties.terminal"
+        fi
     fi
-else
-    # If zsh isn't installed, get the platform of the current machine
-    platform=$(uname);
-    # If the platform is OS X, tell the user to install zsh :)
-    if [[ $platform == 'Darwin' ]]; then
-        echo "Please install zsh, then re-run this script!"
-        exit
-    fi
-fi
 }
 install_syntax_highlighting
 install_prompt_pure
+install_terminal_theme
