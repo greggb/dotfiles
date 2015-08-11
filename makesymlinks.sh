@@ -15,8 +15,6 @@ dir=~/dotfiles                    # dotfiles directory
 olddir=~/dotfiles_old             # old dotfiles backup directory
 files="zshrc gitconfig osx"       # list of files/folders to symlink in homedir
 
-cloneattempts=0                   # attempts to clone and symlink
-
 ##########
 
 # create dotfiles_old in homedir
@@ -44,24 +42,6 @@ function install_syntax_highlighting {
         if [[ $dir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
             mkdir /usr/local/bin/zsh-syntax-highlighting/
             ln -s $dir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh /usr/local/bin/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-            echo "****** Linked syntax highlighter ******"
-            cloneattempts=0
-        else
-            if [[ $cloneattempts -le 5 ]]; then
-                echo "attempting"
-                echo "attempting"
-                echo "attempting"
-                echo "attempting"
-                echo "attempting"
-                echo "attempting"
-                echo "attempting"
-                $cloneattempts=$cloneattempts + 1
-                install_syntax_highlighting
-                else
-                    echo "not able to symlink zsh highlighting"
-                    echo "Try running: "
-                    echo "ln -s zsh-syntax-highlighting/zsh-syntax-highlighting.zsh /usr/local/bin/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-            fi
         fi
     fi
 }
