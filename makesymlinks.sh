@@ -13,7 +13,9 @@
 
 dir=~/dotfiles                    # dotfiles directory
 olddir=~/dotfiles_old             # old dotfiles backup directory
-files="zshrc gitconfig osx"    # list of files/folders to symlink in homedir
+files="zshrc gitconfig osx"       # list of files/folders to symlink in homedir
+
+cloneattempts=0                   # attempts to clone and symlink
 
 ##########
 
@@ -35,15 +37,32 @@ for file in $files; do
     ln -s $dir/$file ~/.$file
 done
 
-install_zsh
-
 function install_syntax_highlighting {
     # Clone zsh syntax highlighting
     if [[ ! -d $dir/zsh-syntax-highlighting/ ]]; then
         git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
-        echo "pwd"
-        echo pwd
-        ln -s zsh-syntax-highlighting/zsh-syntax-highlighting.zsh /usr/local/bin/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+        if [[ $dir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]]; then
+            mkdir /usr/local/bin/zsh-syntax-highlighting/
+            ln -s $dir/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh /usr/local/bin/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+            echo "****** Linked syntax highlighter ******"
+            cloneattempts=0
+        else
+            if [[ $cloneattempts -le 5 ]]; then
+                echo "attempting"
+                echo "attempting"
+                echo "attempting"
+                echo "attempting"
+                echo "attempting"
+                echo "attempting"
+                echo "attempting"
+                $cloneattempts=$cloneattempts + 1
+                install_syntax_highlighting
+                else
+                    echo "not able to symlink zsh highlighting"
+                    echo "Try running: "
+                    echo "ln -s zsh-syntax-highlighting/zsh-syntax-highlighting.zsh /usr/local/bin/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+            fi
+        fi
     fi
 }
 
@@ -61,12 +80,8 @@ if [ -f /bin/zsh -o -f /usr/bin/zsh ]; then
 else
     # If zsh isn't installed, get the platform of the current machine
     platform=$(uname);
-    # If the platform is Linux, try an apt-get to install zsh and then recurse
-    if [[ $platform == 'Linux' ]]; then
-        sudo apt-get install zsh
-        install_zsh
     # If the platform is OS X, tell the user to install zsh :)
-    elif [[ $platform == 'Darwin' ]]; then
+    if [[ $platform == 'Darwin' ]]; then
         echo "Please install zsh, then re-run this script!"
         exit
     fi
