@@ -35,12 +35,24 @@ for file in $files; do
     ln -s $dir/$file ~/.$file
 done
 
-function install_zsh {
+install_zsh
+
+function install_syntax_highlighting {
+    # Clone zsh syntax highlighting
+    if [[ ! -d $dir/zsh-syntax-highlighting/ ]]; then
+        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+        echo "pwd"
+        echo pwd
+        ln -s zsh-syntax-highlighting/zsh-syntax-highlighting.zsh /usr/local/bin/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    fi
+}
+
+function install_prompt_pure {
 # Test to see if zshell is installed.  If it is:
 if [ -f /bin/zsh -o -f /usr/bin/zsh ]; then
-    # Clone my oh-my-zsh repository from GitHub only if it isn't already present
-    if [[ ! -d $dir/oh-my-zsh/ ]]; then
-        git clone http://github.com/greggb/oh-my-zsh.git
+    # run npm install command for Prompt Pure
+    if [[ ! -d /usr/local/share/zsh/site-functions/prompt_pure_setup ]]; then
+        npm install --global pure-prompt
     fi
     # Set the default shell to zsh if it isn't currently set to zsh
     if [[ ! $(echo $SHELL) == $(which zsh) ]]; then
@@ -60,5 +72,5 @@ else
     fi
 fi
 }
-
-install_zsh
+install_syntax_highlighting
+install_prompt_pure
