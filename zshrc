@@ -12,6 +12,7 @@ alias gca='git commit -am'
 alias push='git push'
 alias pull='git pull'
 alias clone='git clone'
+alias localcommits='git log origin/develop..develop'
 
 function track_git_branch() {
   if test "`current_branch`" = ""; then
@@ -27,7 +28,9 @@ alias subl='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
 # This is embarrassing
 alias brwe='brew'
 
-# bind option + left/right to jump by word
+
+# Mappings for Ctrl/Option-left-arrow and Ctrl/Option-right-arrow for
+# moving across words.
 bindkey "\e\e[C" forward-word
 bindkey "\e\e[D" backward-word
 
@@ -44,7 +47,6 @@ bindkey "$terminfo[cud1]" history-substring-search-down
 #Exports
 export PATH=/bin:/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:$PATH
 export EDITOR='subl -w'
-
 
 # Add syntax highlighting
 source `brew --prefix`/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
