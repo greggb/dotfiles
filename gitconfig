@@ -24,3 +24,6 @@
 	branch = yellow
 [push]
 	default = current
+[pager]
+	diff = diff-so-fancy | less --tabs=4 -RFX
+	show = diff-so-fancy | less --tabs=4 -RFX
