@@ -12,7 +12,18 @@ alias gca='git commit -am'
 alias push='git push'
 alias pull='git pull'
 alias clone='git clone'
-alias localcommits='git log origin/develop..develop'
+alias ack='ag'
+alias subl='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
+# This is embarrassing
+alias brwe='brew'
+
+pl() {
+    if [ -d ~/zgit/ ] ; then
+        cd ~/zgit/
+    else
+        cd ~
+    fi
+}
 
 function track_git_branch() {
   if test "`current_branch`" = ""; then
@@ -22,12 +33,6 @@ function track_git_branch() {
     git branch --set-upstream `current_branch` origin/`current_branch`;
   fi
 }
-
-alias subl='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
-
-# This is embarrassing
-alias brwe='brew'
-
 
 # Mappings for Ctrl/Option-left-arrow and Ctrl/Option-right-arrow for
 # moving across words.
@@ -52,9 +57,6 @@ export EDITOR='subl -w'
 if [ -z "$HISTFILE" ]; then
     HISTFILE=$HOME/.zsh_history
 fi
-
-HISTSIZE=10000
-SAVEHIST=10000
 
 setopt append_history
 setopt extended_history
