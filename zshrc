@@ -66,6 +66,10 @@ setopt hist_find_no_dups
 setopt hist_reduce_blanks
 setopt no_hup
 
+# --no-use and '${NVM_DIR}/versions/node/${NODE_VERSION}/bin' in PATH alleviated slowness in shell startup time
+export NVM_DIR="~/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" --no-use # This loads nvm
+
 # Add syntax highlighting
 source `brew --prefix`/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
