@@ -53,23 +53,21 @@ bindkey "$terminfo[cud1]" history-substring-search-down
 export PATH=/bin:/sbin:/usr/bin:/usr/local/sbin:/usr/local/bin:$PATH
 export EDITOR='subl -w'
 
-## Command history configuration
-if [ -z "$HISTFILE" ]; then
-    HISTFILE=$HOME/.zsh_history
-fi
+export HISTFILE=~/.zsh_history
 
 setopt append_history
 setopt extended_history
 setopt hist_expire_dups_first
-setopt hist_ignore_dups # ignore duplication command history list
 setopt hist_ignore_space
 setopt hist_verify
 setopt inc_append_history
 setopt share_history # share command history data
+setopt hist_find_no_dups
+setopt hist_reduce_blanks
+setopt no_hup
 
 # Add syntax highlighting
 source `brew --prefix`/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # Add substring history searching ** must come after syntax highlighting **
 source `brew --prefix`/opt/zsh-history-substring-search/zsh-history-substring-search.zsh
-setopt HIST_FIND_NO_DUPS
