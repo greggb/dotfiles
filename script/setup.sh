@@ -44,7 +44,7 @@ pbcopy < ~/.ssh/id_rsa.pub
 open https://github.com/settings/ssh
 
 echo "Installing nvm..."
-wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.26.1/install.sh | bash
+wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.32.1/install.sh | bash
 
 echo "Installing global node packages..."
 node_packages=(
