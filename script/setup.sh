@@ -53,6 +53,7 @@ node_packages=(
   eslint
   eslint-config-airbnb
   eslint-plugin-react
+  git-standup
   gulp
   listg # list global node modules
   prettyjson
