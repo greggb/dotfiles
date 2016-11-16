@@ -145,9 +145,6 @@ defaults write NSGlobalDomain NSAutomaticQuoteSubstitutionEnabled -bool false
 # Disable smart dashes as they’re annoying when typing code
 defaults write NSGlobalDomain NSAutomaticDashSubstitutionEnabled -bool false
 
-# Kill affected applications
-for app in Finder Dock Mail Safari iTunes SystemUIServer; do killall "$app" > /dev/null 2>&1; done
-echo "Done. Note that some of these changes require a logout/restart to take effect."
 
 ###############################################################################
 # Spotlight                                                                   #
@@ -196,3 +193,7 @@ killall mds > /dev/null 2>&1
 sudo mdutil -i on / > /dev/null
 # Rebuild the index from scratch
 sudo mdutil -E / > /dev/null
+
+# Kill affected applications
+for app in Finder Dock Mail Safari iTunes SystemUIServer; do killall "$app" > /dev/null 2>&1; done
+echo "Done. Note that some of these changes require a logout/restart to take effect."
