@@ -2,20 +2,23 @@
 	name = Gregg
 	email = mail@digitalpuddle.com
 [color]
-	diff = auto
-	status = auto
-	branch = auto
-	interactive = auto
-	ui = auto
-[color "branch"]
-	current = green bold
-	local = green
-	remote = red bold
-	[color "diff"]
+	ui = always
+[color "diff"]
 	meta = yellow bold
+	commit = green bold
 	frag = magenta bold
 	old = red bold
 	new = green bold
+	whitespace = red reverse
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = "red bold 52"
+	newNormal = "green bold"
+	newHighlight = "green bold 22"
+[color "branch"]
+	current = "green bold 22 reverse"
+	local = yellow
+	remote = green
 [color "status"]
 	added = green bold
 	changed = yellow bold
