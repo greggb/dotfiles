@@ -1,8 +1,26 @@
 [user]
-	name = Gregg
+	name = Gregg Brewster
 	email = mail@digitalpuddle.com
+
+[alias]
+	up = "!git remote update -p; git merge --ff-only @{u}"
+	# Amend the currently staged files to the latest commit
+	amend = commit --amend --reuse-message=HEAD
+	# Remove branches that have already been merged with maste
+	# a.k.a. ‘delete merged’
+	dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d; git remote -v update -p"
+	# List contributors with number of commits
+	contributors = shortlog --summary --numbered
+# Sort branches by date
+	sort = "!git for-each-ref --sort=-committerdate refs/heads/ --format='%(committerdate:short) %(authorname) %(refname:short)'"
+
+[apply]
+	# Detect whitespace errors when applying a patch
+	whitespace = fix
+
+
 [color]
-	ui = always
+	ui = auto
 [color "diff"]
 	meta = yellow bold
 	commit = green bold
@@ -25,8 +43,60 @@
 	untracked = red
 [color "sh"]
 	branch = yellow
-[push]
-	default = current
+
+
+[core]
+	# Treat spaces before tabs and all kinds of trailing whitespace as an erro
+	# [default] trailing-space: looks for spaces at the end of a line
+	# [default] space-before-tab: looks for spaces before tabs at the beginning of a line
+	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
+
+	# Make `git rebase` safer on OS X
+	# More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
+	trustctime = false
+	editor = vim
+
+
+[diff]
+	# Detect copies as well as renames
+	renames = copies
+
+
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+
+
+[merge]
+	conflictstyle = diff3
+	# Include summaries of merged commits in newly created merge commit messages
+	log = true
+
+
 [pager]
 	diff = diff-so-fancy | less --tabs=4 -RFX
 	show = diff-so-fancy | less --tabs=4 -RFX
+
+
+[pull]
+	ff = only
+
+
+[push]
+	# change to maching for machines with older versions of git 1.x.x
+	default = current
+
+[url "git@github.com:"]
+	pushInsteadOf = https://github.com/
+	pushInsteadOf = "github:"
+	pushInsteadOf = "git://github.com/"
+[url "git://github.com/"]
+	insteadOf = "github:"
+[url "git@gist.github.com:"]
+	insteadOf = "gst:"
+	pushInsteadOf = "gist:"
+	pushInsteadOf = "git://gist.github.com/"
+[url "git://gist.github.com/"]
+	insteadOf = "gist:"
