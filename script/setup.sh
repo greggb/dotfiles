@@ -43,21 +43,15 @@ ssh-add ~/.ssh/id_rsa
 pbcopy < ~/.ssh/id_rsa.pub
 open https://github.com/settings/ssh
 
-echo "Installing nvm..."
-wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.32.1/install.sh | bash
+echo "Install Homebrew"
+
 
 echo "Installing global node packages..."
 node_packages=(
-  caniuse-cmd
   diff-so-fancy
   eslint
-  eslint-config-airbnb
-  eslint-plugin-react
-  git-standup
-  gulp
   listg # list global node modules
   prettyjson
-  pure-prompt # nice prompt for zsh
 )
 npm install -g ${node_packages[@]}
 
