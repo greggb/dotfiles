@@ -1,9 +1,7 @@
 alias zshconfig="code ~/.zshrc"
-alias aliasconfig="code /Users/gregg/.oh-my-zsh/custom/aliases.zsh"
+alias aliasconfig="code /Users/gregg/.oh-my-zsh/custom/aliases.sh"
 alias ll='ls -la'
-alias g='git'
 alias ga='git add --all'
-alias gb='git branch'
 alias push='git push'
 alias gll='git log'
 # View abbreviated SHA, description, and history graph of the latest 20 commits
@@ -26,13 +24,28 @@ alias killdock='killall Dock'
 alias clock='cli-clock -b " " -f ▫️'
 alias rundev='cd ~/dev/mitx && vagrant ssh'
 alias work='cd ~/dev/mitx'
-alias code='code-insiders'
+#ICANTYPEGOOD
+alias brwe='brew'
+
+# alias code='code-insiders'
 
 alias v='vagrant'
 alias ack='ag'
-alias brwe='brew'
-ld() { cd "$@" && ls; }
+alias cat='bat'
+alias ping='prettyping --nolegend'
+alias preview="fzf --preview 'bat --color \"always\" {}'"
+alias top="sudo htop"
+alias find="fd"
+# add support for ctrl+o to open selected file in VS Code
+export FZF_DEFAULT_OPTS="--bind='ctrl-o:execute(code {})+abort'"
 
+# open new shell with no configs which interfere with the `versions.sh`` script
+alias versions='work && env -i  TERM=xterm-256color sh --rcfile -c "versions.sh"'
+
+ld() { cd "$@" && ls; }
+importcourse() {
+	./manage.py import_course -f  ../education/mercury/"$(@)"/course.json
+}
 mkd() {
 	mkdir -p "$@"
 	cd "$@" || exit
@@ -102,3 +115,9 @@ isup() {
 		notify-send --urgency=low "$uri is up"
 	fi
 }
+
+
+# OMZ spaeship theme settings
+# SPACESHIP_GIT_STATUS_STASHED=""
+SPACESHIP_PACKAGE_SHOW=false
+
