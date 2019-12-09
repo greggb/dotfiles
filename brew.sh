@@ -11,3 +11,4 @@ brew install n
 brew install prettyping
 brew install the_silver_searcher
 brew install vim --with-override-system-vi
+brew install zsh
