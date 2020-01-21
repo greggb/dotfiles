@@ -1,7 +1,10 @@
 alias zshconfig="code ~/.zshrc"
 alias aliasconfig="code /Users/gregg/.oh-my-zsh/custom/aliases.sh"
+alias gitconfig="code ~/.gitconfig"
 alias ll='ls -la'
+alias g='git'
 alias ga='git add --all'
+alias gb='git branch'
 alias push='git push'
 alias gll='git log'
 # View abbreviated SHA, description, and history graph of the latest 20 commits
@@ -11,8 +14,8 @@ alias gss='git status'
 alias gd='git diff'
 alias gc='git commit -m'
 alias gca='git add . && git commit -vm'
-alias pull='git pull'
 alias gco='git checkout'
+alias pull='git pull'
 alias prune='git fetch -p'
 alias lb='git checkout -'
 alias -- -='git checkout -'
@@ -22,12 +25,12 @@ alias ack='ag'
 alias killtb='pkill "Touch Bar agent"; killall ControlStrip'
 alias killdock='killall Dock'
 alias clock='cli-clock -b " " -f ▫️'
+
 alias rundev='cd ~/dev/mitx && vagrant ssh'
 alias work='cd ~/dev/mitx'
+
 #ICANTYPEGOOD
 alias brwe='brew'
-
-# alias code='code-insiders'
 
 alias v='vagrant'
 alias ack='ag'
@@ -43,9 +46,7 @@ export FZF_DEFAULT_OPTS="--bind='ctrl-o:execute(code {})+abort'"
 alias versions='work && env -i  TERM=xterm-256color sh --rcfile -c "versions.sh"'
 
 ld() { cd "$@" && ls; }
-importcourse() {
-	./manage.py import_course -f  ../education/mercury/"$(@)"/course.json
-}
+
 mkd() {
 	mkdir -p "$@"
 	cd "$@" || exit
