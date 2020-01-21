@@ -1,7 +1,3 @@
-[user]
-	name = Gregg Brewster
-	email = mail@digitalpuddle.com
-
 [alias]
 	up = "!git remote update -p; git merge --ff-only @{u}"
 	# Amend the currently staged files to the latest commit
