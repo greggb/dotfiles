@@ -5,9 +5,11 @@
 	# Remove branches that have already been merged with maste
 	# a.k.a. ‘delete merged’
 	dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d; git remote -v update -p"
+	# remove banches that have been squashed merged
+	dsm = 'git checkout master && comm -12 <(git branch | sed "s/ *//g") <(git remote prune origin | sed "s/^.*origin\///g") | xargs -L1 -J % git branch -D %'
 	# List contributors with number of commits
 	contributors = shortlog --summary --numbered
-# Sort branches by date
+	# Sort branches by date
 	sort = "!git for-each-ref --sort=-committerdate refs/heads/ --format='%(committerdate:short) %(authorname) %(refname:short)'"
 
 [apply]
