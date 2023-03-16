@@ -1,0 +1,42 @@
+{
+  // don't track
+  "telemetry.telemetryLevel": "off",
+  // editor setting
+  "editor.wordWrap": "bounded",
+  "editor.formatOnSave": true,
+  "editor.minimap.renderCharacters": false,
+  "editor.multiCursorModifier": "ctrlCmd",
+  "editor.rulers": [80],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  // Theme
+  "editor.cursorBlinking": "phase",
+  "editor.fontFamily": "'OperatorMono-Book', Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontSize": 14,
+  "workbench.colorTheme": "Night Owl",
+  "workbench.activityBar.visible": false,
+
+  "explorer.confirmDelete": false,
+  "files.insertFinalNewline": true,
+  // plugins
+  "js/ts.implicitProjectConfig.checkJs": true,
+  "git.autofetch": true,
+  "editor.tabCompletion": "onlySnippets",
+  "editor.snippetSuggestions": "top",
+  "workbench.startupEditor": "newUntitledFile",
+  "git.confirmSync": false,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "gitlens.blame.highlight.enabled": false,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.minimap.enabled": false,
+  "editor.wordBasedSuggestionsMode": "currentDocument",
+  "debug.console.historySuggestions": false,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "eslint.format.enable": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  // Only spellcheck text-ish files and commit messages
+  "cSpell.enabledLanguageIds": ["markdown", "plaintext"],
+  "cSpell.enableFiletypes": ["scminput"]
+}
