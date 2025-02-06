@@ -1,20 +1,30 @@
+[user]
+	name = 
+	email = 
+
 [alias]
 	up = "!git remote update -p; git merge --ff-only @{u}"
 	# Amend the currently staged files to the latest commit
 	amend = commit --amend --reuse-message=HEAD
-	# Remove branches that have already been merged with maste
+	ll = log
+	ss = status
+	# Remove branches that have already been merged with main
 	# a.k.a. ‘delete merged’
 	dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d; git remote -v update -p"
 	# List contributors with number of commits
 	contributors = shortlog --summary --numbered
 	# Sort branches by date
 	sort = "!git for-each-ref --sort=-committerdate refs/heads/ --format='%(committerdate:short) %(authorname) %(refname:short)'"
+	# delete squash merged branches
+	ds="!git checkout -q main && git for-each-ref refs/heads/ "--format=%(refname:short)" | while read branch; do mergeBase=$(git merge-base main $branch) && [[ $(git cherry main $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == "-"* ]] && git branch -D $branch; done"
 	# check for merged branches
-	check="!git checkout -q main && git for-each-ref refs/heads/ "--format=%(refname:short)" | while read branch; do mergeBase=$(git merge-base main $branch) && [[ $(git cherry main $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == "-"* ]] && echo "$branch is merged into main and can be deleted"; done"
+	check="!git checkout -q main && git for-each-ref refs/heads/ '--format=%(refname:short)' | while read branch; do mergeBase=$(git merge-base main $branch) && [[ $(git cherry main $(git commit-tree $(git rev-parse '$branch^{tree}') -p $mergeBase -m _)) == '-'* ]] && echo '$branch is merged into main and can be deleted"; done"
 	# delete merged branches
 	cleanup="!git checkout -q main && git for-each-ref refs/heads/ "--format=%(refname:short)" | while read branch; do mergeBase=$(git merge-base main $branch) && [[ $(git cherry main $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == "-"* ]] && git branch -D $branch; done"
 	# fixup previous commit
 	fixup = "!f() { git commit --fixup $1; }; f"
+	go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
+
 [apply]
 	# Detect whitespace errors when applying a patch
 	whitespace = fix
@@ -47,7 +57,7 @@
 
 
 [core]
-	# Treat spaces before tabs and all kinds of trailing whitespace as an erro
+	# Treat spaces before tabs and all kinds of trailing whitespace as an error
 	# [default] trailing-space: looks for spaces at the end of a line
 	# [default] space-before-tab: looks for spaces before tabs at the beginning of a line
 	whitespace = space-before-tab,-indent-with-non-tab,trailing-space
@@ -56,6 +66,10 @@
 	# More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
 	trustctime = false
 	editor = vim
+	pager = delta
+
+[pager]
+	blame = delta
 
 
 [diff]
@@ -71,23 +85,26 @@
 
 
 [merge]
-	conflictstyle = diff3
+	conflictstyle = zdiff3
 	# Include summaries of merged commits in newly created merge commit messages
 	log = true
-
-
-[pager]
-	diff = diff-so-fancy | less --tabs=4 -RFX
-	show = diff-so-fancy | less --tabs=4 -RFX
-
 
 [pull]
 	ff = only
 
 
 [push]
-	# change to maching for machines with older versions of git 1.x.x
+	# change to matching for machines with older versions of git 1.x.x
 	default = current
+
+[rebase]
+  autosquash = true
+
+[delta]
+	navigate = true # navigate with `n` and `N`
+	dark = true
+	line-numbers = true
+	hyperlinks = true
 
 [url "git@github.com:"]
 	pushInsteadOf = https://github.com/
@@ -101,3 +118,5 @@
 	pushInsteadOf = "git://gist.github.com/"
 [url "git://gist.github.com/"]
 	insteadOf = "gist:"
+[url "ssh://git@github.com/"]
+	insteadOf = https://github.com/
