@@ -1,39 +1,35 @@
 alias zshconfig="code ~/.zshrc"
 alias aliasconfig="code /Users/gregg/.oh-my-zsh/custom/aliases.sh"
 alias gitconfig="code ~/.gitconfig"
-alias ll='ls -la'
+
 alias g='git'
 alias ga='git add --all'
 alias gb='git branch'
 alias push='git push'
-alias gll='git log'
+alias pull='git pull'
 # View abbreviated SHA, description, and history graph of the latest 20 commits
 alias gl='git log --pretty=oneline -n 20 --graph --abbrev-commit'
 alias gs='git status -s'
-alias gss='git status'
 alias gd='git diff'
 alias gc='git commit -m'
 alias gca='git add . && git commit -vm'
 alias gco='git checkout'
-alias pull='git pull'
+alias gcp='git cherry-pick'
 alias prune='git fetch -p'
-alias lb='git checkout -'
 alias -- -='git checkout -'
 alias gcob='git checkout -b'
-alias localcommits='git log origin/develop..develop'
-alias killtb='pkill "Touch Bar agent"; killall ControlStrip'
 alias killdock='killall Dock'
-alias clock='cli-clock -b " " -f ▫️'
-
-alias rundev='cd ~/dev/mitx && vagrant ssh'
-alias work='cd ~/dev/mitx'
 
 #ICANTYPEGOOD
 alias brwe='brew'
 
-alias v='vagrant'
+alias python='/usr/local/bin/python3'
+alias pip='/usr/local/bin/pip3'
+
 alias ack='ag'
 alias cat='bat'
+alias ls='eza'
+alias ll='eza --all --long --group --group-directories-first --icons --header --time-style long-iso'
 alias ping='prettyping --nolegend'
 alias preview="fzf --preview 'bat --color \"always\" {}'"
 alias top="sudo htop"
@@ -41,19 +37,12 @@ alias find="fd"
 # add support for ctrl+o to open selected file in VS Code
 export FZF_DEFAULT_OPTS="--bind='ctrl-o:execute(code {})+abort'"
 
-# open new shell with no configs which interfere with the `versions.sh`` script
-alias versions='work && env -i  TERM=xterm-256color sh --rcfile -c "versions.sh"'
 
 ld() { cd "$@" && ls; }
-
 mkd() {
 	mkdir -p "$@"
 	cd "$@" || exit
 }
-tre() {
-     tree -aC -I '.*' --dirsfirst "$@" | less -FRNX
-}
-go(){ git checkout -b $1 2> /dev/null || git checkout $1; };
 # Call from a local repo to open the repository on github/bitbucket in browser
 # Modified version of https://github.com/zeke/ghwd
 repo() {
