@@ -14,3 +14,7 @@ source $ZSH/custom/aliases.sh
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+# fnm
+eval "`fnm env`"
+eval "$(fnm env --use-on-cd)"
