@@ -1,42 +1,70 @@
 {
+  // app settings
+  "workbench.startupEditor": "newUntitledFile",
+  "workbench.activityBar.location": "hidden",
+  "http.proxySupport": "off",
+  "explorer.confirmDelete": false,
+  "terminal.integrated.profiles.osx": {
+    "zsh": { "path": "/bin/zsh", "args": ["-l", "-i"] }
+  },
   // don't track
   "telemetry.telemetryLevel": "off",
   // editor setting
-  "editor.wordWrap": "bounded",
+  "editor.accessibilitySupport": "off",
+  "editor.bracketPairColorization.enabled": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit",
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
+  "editor.linkedEditing": true,
+  "editor.minimap.enabled": false,
   "editor.minimap.renderCharacters": false,
   "editor.multiCursorModifier": "ctrlCmd",
   "editor.rulers": [80],
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  // Theme
-  "editor.cursorBlinking": "phase",
-  "editor.fontFamily": "'OperatorMono-Book', Menlo, Monaco, 'Courier New', monospace",
-  "editor.fontSize": 14,
-  "workbench.colorTheme": "Night Owl",
-  "workbench.activityBar.visible": false,
-
-  "explorer.confirmDelete": false,
-  "files.insertFinalNewline": true,
-  // plugins
-  "js/ts.implicitProjectConfig.checkJs": true,
-  "git.autofetch": true,
-  "editor.tabCompletion": "onlySnippets",
   "editor.snippetSuggestions": "top",
-  "workbench.startupEditor": "newUntitledFile",
-  "git.confirmSync": false,
-  "diffEditor.ignoreTrimWhitespace": false,
-  "gitlens.blame.highlight.enabled": false,
-  "editor.bracketPairColorization.enabled": true,
-  "editor.minimap.enabled": false,
-  "editor.wordBasedSuggestionsMode": "currentDocument",
-  "debug.console.historySuggestions": false,
-  "typescript.preferences.importModuleSpecifier": "non-relative",
-  "javascript.preferences.importModuleSpecifier": "non-relative",
-  "eslint.format.enable": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true
+  "editor.tabCompletion": "onlySnippets",
+  "editor.wordWrap": "bounded",
+  "files.insertFinalNewline": true,
+  // Theme
+  "window.zoomLevel": -1,
+  "workbench.editor.showTabs": "none",
+  "workbench.colorTheme": "Tokyo Night",
+  "editor.cursorBlinking": "phase",
+  "editor.fontFamily": "'Cascadia Mono SemiLight', 'Cascadia Mono', 'OperatorMono-Book', Menlo, Monaco, 'Courier New', monospace",
+  "editor.fontSize": 13,
+  "workbench.colorCustomizations": {
+    "editorGhostText.border": "#d71982"
   },
+  // plugins
+  "extensions.ignoreRecommendations": true,
+  "debug.console.historySuggestions": false,
+  "diffEditor.ignoreTrimWhitespace": true,
+  "javascript.preferences.importModuleSpecifier": "non-relative",
+  "js/ts.implicitProjectConfig.checkJs": true,
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "typescript.tsserver.pluginPaths": ["typescript-plugin-css-modules"],
+  "eslint.format.enable": true,
+  "playwright.showTrace": false,
+  "playwright.reuseBrowser": false,
   // Only spellcheck text-ish files and commit messages
-  "cSpell.enabledLanguageIds": ["markdown", "plaintext"],
-  "cSpell.enableFiletypes": ["scminput"]
+  "cSpell.enabledFileTypes": {
+    "*": false,
+    "markdown": true,
+    "plaintext": true,
+    "scminput": true
+  },
+  // git
+  "git.openRepositoryInParentFolders": "never",
+  "githubIssues.createIssueTriggers": [],
+  "githubPullRequests.defaultCommentType": "review",
+  "githubPullRequests.showPullRequestNumberInTree": true,
+  "githubPullRequests.fileListLayout": "tree",
+  "githubPullRequests.pullBranch": "never",
+  "gitlens.telemetry.enabled": false,
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "gitlens.blame.highlight.enabled": false,
+  "gitlens.views.commitDetails.files.layout": "list"
 }
