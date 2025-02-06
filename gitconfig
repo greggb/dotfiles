@@ -8,6 +8,8 @@
 	amend = commit --amend --reuse-message=HEAD
 	ll = log
 	ss = status
+	# undo the last commit
+	undo = "!f() { git reset --hard $(git rev-parse --abbrev-ref HEAD)@{${1-1}}; }; f"
 	# Remove branches that have already been merged with main
 	# a.k.a. ‘delete merged’
 	dm = "!git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d; git remote -v update -p"
@@ -28,7 +30,6 @@
 [apply]
 	# Detect whitespace errors when applying a patch
 	whitespace = fix
-
 
 [color]
 	ui = auto
@@ -55,7 +56,6 @@
 [color "sh"]
 	branch = yellow
 
-
 [core]
 	# Treat spaces before tabs and all kinds of trailing whitespace as an error
 	# [default] trailing-space: looks for spaces at the end of a line
@@ -71,18 +71,21 @@
 [pager]
 	blame = delta
 
+[delta]
+	navigate = true # navigate with `n` and `N`
+	dark = true
+	line-numbers = true
+	hyperlinks = true
 
 [diff]
 	# Detect copies as well as renames
 	renames = copies
-
 
 [filter "lfs"]
 	required = true
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
-
 
 [merge]
 	conflictstyle = zdiff3
@@ -92,19 +95,15 @@
 [pull]
 	ff = only
 
-
 [push]
 	# change to matching for machines with older versions of git 1.x.x
 	default = current
 
 [rebase]
-  autosquash = true
+	autosquash = true
 
-[delta]
-	navigate = true # navigate with `n` and `N`
-	dark = true
-	line-numbers = true
-	hyperlinks = true
+[branch]
+	sort = -committerdate
 
 [url "git@github.com:"]
 	pushInsteadOf = https://github.com/
