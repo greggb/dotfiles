@@ -1,0 +1,56 @@
+alias zshconfig="$EDITOR ~/.zshrc"
+alias aliasconfig="$EDITOR ~/aliases"
+alias gitconfig="$EDITOR ~/.gitconfig"
+
+# git
+alias g='git'
+alias ga='git add --all'
+alias gb='git branch'
+alias push='git push'
+alias pull='git pull'
+# View abbreviated SHA, description, and history graph of the latest 20 commits
+alias gl='git log --pretty=oneline -n 20 --graph --abbrev-commit'
+alias gs='git status -s'
+alias gd='git diff'
+alias gc='git commit -m'
+alias gca='git add . && git commit -vm'
+alias gco='git checkout'
+alias gcp='git cherry-pick'
+alias prune='git fetch -p'
+alias gcob='git checkout -b'
+
+alias killdock='killall Dock'
+
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias sudo='sudo '
+alias copy="tr -d '\n' | pbcopy"
+# Reload the shell (i.e. invoke as a login shell)
+alias reload="exec $SHELL -l"# IP addresses
+alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias localip="ipconfig getifaddr en0"
+
+#ICANTYPEGOOD
+alias brwe='brew'
+
+alias python='/usr/local/bin/python3'
+alias pip='/usr/local/bin/pip3'
+
+alias ack='ag'
+alias cat='bat'
+alias find="fd"
+alias ls='eza'
+alias ll='eza --all --long --group --group-directories-first --icons --header --time-style long-iso'
+alias ping='prettyping --nolegend'
+alias preview="fzf --preview 'bat --color \"always\" {}'"
+alias top="sudo htop"
+
+alias dl="yt-dlp -ciw --trim-filenames 200 -S res,ext:mp4:m4a --recode-video mp4"
+alias dls="yt-dlp -ciw --extract-audio --audio-quality 0 --audio-format mp3 --trim-filenames 200"
+
+# Empty the Trash on all mounted volumes and the main HDD.
+# Also, clear Apple’s System Logs to improve shell startup speed.
+# Finally, clear download history from quarantine. https://mths.be/bum
+alias emptytrash="sudo rm -rfv /Volumes/*/.Trashes; sudo rm -rfv ~/.Trash; sudo rm -rfv /private/var/log/asl/*.asl; sqlite3 ~/Library/Preferences/com.apple.LaunchServices.QuarantineEventsV* 'delete from LSQuarantineEvent'"

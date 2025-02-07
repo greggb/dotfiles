@@ -1,0 +1,27 @@
+export ZSH="/Users/gregg/.oh-my-zsh"
+export EDITOR='nvim'
+# add support for ctrl+o to open selected file in VS Code
+export FZF_DEFAULT_OPTS="--bind='ctrl-o:execute(code {})+abort'"
+
+ZSH_THEME="spaceship"
+SPACESHIP_PACKAGE_SHOW=false
+
+DISABLE_AUTO_UPDATE="true"
+COMPLETION_WAITING_DOTS="true"
+
+plugins=(git git-extras)
+
+source $ZSH/oh-my-zsh.sh
+source $ZSH/custom/aliases.zsh
+source $HOME/.aliases
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+export N_PREFIX="$HOME/n"; [[ :$PATH: == *":$N_PREFIX/bin:"* ]] || PATH+=":$N_PREFIX/bin"  # Added by n-install (see http://git.io/n-install-repo).
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+# fnm
+eval "`fnm env`"
+eval "$(fnm env --use-on-cd)"
+

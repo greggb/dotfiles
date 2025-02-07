@@ -8,6 +8,7 @@
 	amend = commit --amend --reuse-message=HEAD
 	ll = log
 	ss = status
+	remotes = remote -v
 	# undo the last commit
 	undo = "!f() { git reset --hard $(git rev-parse --abbrev-ref HEAD)@{${1-1}}; }; f"
 	# Remove branches that have already been merged with main
@@ -25,7 +26,10 @@
 	cleanup="!git checkout -q main && git for-each-ref refs/heads/ "--format=%(refname:short)" | while read branch; do mergeBase=$(git merge-base main $branch) && [[ $(git cherry main $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == "-"* ]] && git branch -D $branch; done"
 	# fixup previous commit
 	fixup = "!f() { git commit --fixup $1; }; f"
+	# checkout branch or create if it doesn't exist
 	go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
+	# Show the diff between the latest commit and the current state
+	d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
 
 [apply]
 	# Detect whitespace errors when applying a patch
@@ -76,6 +80,7 @@
 	dark = true
 	line-numbers = true
 	hyperlinks = true
+  	hyperlinks-file-link-format = "vscode://file/{path}:{line}"
 
 [diff]
 	# Detect copies as well as renames

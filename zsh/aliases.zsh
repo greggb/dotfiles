@@ -1,42 +1,7 @@
-alias zshconfig="code ~/.zshrc"
-alias aliasconfig="code /Users/gregg/.oh-my-zsh/custom/aliases.sh"
-alias gitconfig="code ~/.gitconfig"
 
-alias g='git'
-alias ga='git add --all'
-alias gb='git branch'
-alias push='git push'
-alias pull='git pull'
-# View abbreviated SHA, description, and history graph of the latest 20 commits
-alias gl='git log --pretty=oneline -n 20 --graph --abbrev-commit'
-alias gs='git status -s'
-alias gd='git diff'
-alias gc='git commit -m'
-alias gca='git add . && git commit -vm'
-alias gco='git checkout'
-alias gcp='git cherry-pick'
-alias prune='git fetch -p'
 alias -- -='git checkout -'
-alias gcob='git checkout -b'
-alias killdock='killall Dock'
 
-#ICANTYPEGOOD
-alias brwe='brew'
-
-alias python='/usr/local/bin/python3'
-alias pip='/usr/local/bin/pip3'
-
-alias ack='ag'
-alias cat='bat'
-alias ls='eza'
-alias ll='eza --all --long --group --group-directories-first --icons --header --time-style long-iso'
-alias ping='prettyping --nolegend'
-alias preview="fzf --preview 'bat --color \"always\" {}'"
-alias top="sudo htop"
-alias find="fd"
-# add support for ctrl+o to open selected file in VS Code
-export FZF_DEFAULT_OPTS="--bind='ctrl-o:execute(code {})+abort'"
-
+shrinkmp3(){ ffmpeg -i "$1" -c:a libmp3lame -b:a 192k -ac 2 -ar 44100 -vn "$2"; };
 
 ld() { cd "$@" && ls; }
 mkd() {
@@ -104,9 +69,3 @@ isup() {
 		notify-send --urgency=low "$uri is up"
 	fi
 }
-
-
-# OMZ spaeship theme settings
-# SPACESHIP_GIT_STATUS_STASHED=""
-SPACESHIP_PACKAGE_SHOW=false
-

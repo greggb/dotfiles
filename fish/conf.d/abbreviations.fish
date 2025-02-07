@@ -1,0 +1,1 @@
+abbr - "git checkout -"
