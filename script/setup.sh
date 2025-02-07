@@ -37,7 +37,7 @@ for DOTFILE in *; do
 done
 
 echo "Generating SSH keys (https://help.github.com/articles/generating-ssh-keys)..."
-ssh-keygen -t rsa -C "mail@digitalpuddle.com"
+# ssh-keygen -t rsa -C "<email@email.com>"
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/id_rsa
 pbcopy < ~/.ssh/id_rsa.pub
