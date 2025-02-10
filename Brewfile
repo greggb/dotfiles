@@ -13,7 +13,7 @@ brew 'mas'
 brew 'tarsnap'
 brew 'the_silver_searcher'
 brew 'vim'
-brew 'youtube-dl'
+brew "yt-dlp"
 brew 'zsh'
 brew 'zsh-history-substring-search'
 brew 'zsh-syntax-highlighting'

@@ -28,7 +28,7 @@ alias .....="cd ../../../.."
 alias sudo='sudo '
 alias copy="tr -d '\n' | pbcopy"
 # Reload the shell (i.e. invoke as a login shell)
-alias reload="exec $SHELL -l"# IP addresses
+alias reload="exec $SHELL -l" # IP addresses
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
 alias localip="ipconfig getifaddr en0"
 
@@ -41,7 +41,7 @@ alias pip='/usr/local/bin/pip3'
 alias ack='ag'
 alias cat='bat'
 alias find="fd"
-alias ls='eza'
+alias ls='eza --icons --group-directories-first'
 alias ll='eza --all --long --group --group-directories-first --icons --header --time-style long-iso'
 alias ping='prettyping --nolegend'
 alias preview="fzf --preview 'bat --color \"always\" {}'"
