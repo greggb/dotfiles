@@ -1,5 +1,5 @@
 alias zshconfig="$EDITOR ~/.zshrc"
-alias aliasconfig="$EDITOR ~/aliases"
+alias aliasconfig="$EDITOR ~/.aliases"
 alias gitconfig="$EDITOR ~/.gitconfig"
 
 # git
