@@ -35,6 +35,9 @@ alias localip="ipconfig getifaddr en0"
 #ICANTYPEGOOD
 alias brwe='brew'
 
+# VS Code - speed up opening
+alias v="open $1 -a \"Visual Studio Code\""
+
 alias python='/usr/local/bin/python3'
 alias pip='/usr/local/bin/pip3'
 
