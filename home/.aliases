@@ -28,7 +28,8 @@ alias .....="cd ../../../.."
 alias sudo='sudo '
 alias copy="tr -d '\n' | pbcopy"
 # Reload the shell (i.e. invoke as a login shell)
-alias reload="exec $SHELL -l" # IP addresses
+alias reload="exec $SHELL -l"
+# IP addresses
 alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
 alias localip="ipconfig getifaddr en0"
 
