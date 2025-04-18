@@ -1,6 +1,9 @@
-if status is-interactive
-    # Commands to run in interactive sessions can go here
+if test -d "$HOME/.local/bin"
+    fish_add_path "$HOME/.local/bin"
 end
-source $HOME/.aliases
 
-starship init fish | source
+if status is-interactive
+    source $HOME/.aliases
+    # Set fish prompt
+    starship init fish | source
+end
