@@ -8,24 +8,6 @@ mkd() {
 	mkdir -p "$@"
 	cd "$@" || exit
 }
-# Function to switch to a Git branch or create it if it doesn't exist
-go() {
-  if [ $# -eq 0 ]; then
-    echo "Usage: go <branch-name>"
-    return 1
-  fi
-
-  local branch_name="$1"
-  
-  # Check if the branch exists locally or remotely
-  if git rev-parse --verify --quiet "$branch_name" >/dev/null 2>&1 || git rev-parse --verify --quiet "origin/$branch_name" >/dev/null 2>&1; then
-    echo "Switching to existing branch '$branch_name'"
-    git switch "$branch_name"
-  else
-    echo "Creating new branch '$branch_name'"
-    git switch -c "$branch_name"
-  fi
-}
 # Call from a local repo to open the repository on github/bitbucket in browser
 # Modified version of https://github.com/zeke/ghwd
 repo() {
