@@ -12,7 +12,6 @@
    - copy contents of `home` to ~ directory
    - add name and email to gitconfig
    - execute .macos
-   - Install [FiraMono Nerd Font](https://www.nerdfonts.com/font-downloads) for rocketship prompt
    - clone contents of [nvim kickstart](https://github.com/greggb/kickstart.nvim) into `~/.config/nvim`
 
 6. Set fish as default shell in Ghostty
@@ -38,3 +37,5 @@ open https://github.com/settings/ssh
 ### Notes
 
 - Look into using https://www.chezmoi.io to manage install/update
+- If not using Ghostty, which embeds a nerd font.
+   - Install [FiraMono Nerd Font](https://www.nerdfonts.com/font-downloads) for rocketship prompt
