@@ -21,6 +21,8 @@ alias gcob='git checkout -b'
 
 alias killdock='killall Dock'
 
+alias npx='pnpm dlx'
+
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
