@@ -1,0 +1,15 @@
+# `ghostty +show-config --default --docs` 
+# https://ghostty.org/docs/config.
+#
+# # Spacing around the equals sign does not matter.
+#
+# # Empty values are used to reset config keys to default.
+# key =
+
+# --- Key Bindings ---
+keybind = shift+enter=text:\n
+
+# --- Pane Settings ---
+focus-follows-mouse=true
+split-divider-color="#FF69B4"
+unfocused-split-opacity=0.45
