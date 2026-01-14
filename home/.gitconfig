@@ -32,6 +32,20 @@
 	# Show the diff between the latest commit and the current state
 	d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
 
+	# Worktrees
+	# List all worktrees
+	wt = worktree list
+	# Add a new worktree
+	wta = !git worktree add
+	# Create worktree with new branch based on current branch
+	wtb = "!f() { git worktree add -b \"$1\" \"../$1\"; }; f"
+	# Create worktree with new branch based on main
+	wtm = "!f() { git worktree add -b \"$1\" \"../$1\" main; }; f"
+	# Remove a worktree
+	wtr = worktree remove
+	# Prune stale worktree references
+	wtp = worktree prune
+
 [apply]
 	# Detect whitespace errors when applying a patch
 	whitespace = fix
