@@ -28,7 +28,7 @@
 	# fixup previous commit
 	fixup = "!f() { git commit --fixup $1; }; f"
 	# checkout branch or create if it doesn't exist
-	go = "!f() { git checkout -b \"$1\" 2> /dev/null || git checkout \"$1\"; }; f"
+	go = "!f() { git switch \"$1\" 2>/dev/null || git switch -c \"$1\"; }; f"
 	# Show the diff between the latest commit and the current state
 	d = !"git diff-index --quiet HEAD -- || clear; git --no-pager diff --patch-with-stat"
 
