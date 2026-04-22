@@ -10,6 +10,7 @@
 
    - copy config dir to `~/.config`
    - copy contents of `home` to ~ directory
+   - make the dev script executable: `chmod +x ~/.local/bin/dev`
    - add name and email to gitconfig
    - execute .macos
    - clone contents of [nvim kickstart](https://github.com/greggb/kickstart.nvim) into `~/.config/nvim`

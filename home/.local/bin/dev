@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+# dev — open a tmux dev session with nvim, claude, and a shell
+# Usage: dev [path]
+
+set -e
+
+if ! command -v tmux &>/dev/null; then
+  echo "error: tmux is not installed (brew install tmux)" >&2
+  exit 1
+fi
+
+TARGET_DIR="${1:-.}"
+TARGET_DIR="$(cd "$TARGET_DIR" 2>/dev/null && pwd)" || {
+  echo "error: directory not found: $1" >&2
+  exit 1
+}
+
+SESSION_NAME="$(basename "$TARGET_DIR")"
+
+# Sanitize session name (tmux doesn't allow dots or colons)
+SESSION_NAME="${SESSION_NAME//[.:]/–}"
+
+# If session already exists, attach and done
+if tmux has-session -t "=$SESSION_NAME" 2>/dev/null; then
+  if [ -n "$TMUX" ]; then
+    tmux switch-client -t "=$SESSION_NAME"
+  else
+    tmux attach-session -t "=$SESSION_NAME"
+  fi
+  exit 0
+fi
+
+# Detect terminal dimensions for the new session
+COLS=$(tput cols 2>/dev/null || echo 220)
+ROWS=$(tput lines 2>/dev/null || echo 50)
+
+# Create detached session — first pane is the nvim pane (full height, left)
+tmux new-session -d -s "$SESSION_NAME" -c "$TARGET_DIR" -x "$COLS" -y "$ROWS"
+
+# Split right column (35% of width) — this pane will become claude
+tmux split-window -h -p 35 -t "${SESSION_NAME}:1" -c "$TARGET_DIR"
+
+# Split the right pane vertically — bottom becomes the plain shell
+tmux split-window -v -p 50 -t "${SESSION_NAME}:1.2" -c "$TARGET_DIR"
+
+# Start apps (bottom shell stays clean)
+tmux send-keys -t "${SESSION_NAME}:1.2" "claude" Enter
+tmux send-keys -t "${SESSION_NAME}:1.1" "nvim ." Enter
+
+# Focus the nvim pane
+tmux select-pane -t "${SESSION_NAME}:1.1"
+
+# Attach (or switch if already inside tmux)
+if [ -n "$TMUX" ]; then
+  tmux switch-client -t "=$SESSION_NAME"
+else
+  tmux attach-session -t "=$SESSION_NAME"
+fi
