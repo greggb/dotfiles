@@ -32,8 +32,7 @@ pbcopy < ~/.ssh/id_rsa.pub
 open https://github.com/settings/ssh
 ```
 
-8. install node with `fnm`
-9. Install pnpm with `corepack`
+8. Install node and pnpm with `mise install`
 
 ### Notes
 
