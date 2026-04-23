@@ -1,9 +1,29 @@
 #!/bin/sh
 KEY="$HOME/.ssh/id_ed25519"
+
+mkdir -p "$HOME/.ssh"
+chmod 700 "$HOME/.ssh"
+
+# Generate key if not present; prompts for passphrase (key must be encrypted at rest)
 if [ ! -f "$KEY" ]; then
-  ssh-keygen -t ed25519 -C "{{ .email }}" -f "$KEY" -N ""
+  ssh-keygen -t ed25519 -C "{{ .email }}" -f "$KEY"
 fi
-eval "$(ssh-agent -s)"
-ssh-add "$KEY" 2>/dev/null || true
+
+# Configure macOS to auto-load the key and cache the passphrase in Keychain
+SSH_CONFIG="$HOME/.ssh/config"
+if ! grep -q "UseKeychain" "$SSH_CONFIG" 2>/dev/null; then
+  cat >> "$SSH_CONFIG" <<'EOF'
+
+Host *
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_ed25519
+EOF
+  chmod 600 "$SSH_CONFIG"
+fi
+
+# Store passphrase in macOS Keychain so key survives reboots without re-entering
+ssh-add --apple-use-keychain "$KEY"
+
 pbcopy < "$KEY.pub"
 open https://github.com/settings/ssh/new
