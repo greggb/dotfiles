@@ -1,0 +1,3 @@
+#!/bin/sh
+# Brewfile hash: {{ include "Brewfile" | sha256sum }}
+brew bundle --no-lock --file="{{ .chezmoi.sourceDir }}/Brewfile"
