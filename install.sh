@@ -36,14 +36,22 @@ sh "$HOME/.macos"
 /opt/homebrew/bin/mise install --quiet
 /opt/homebrew/bin/mise exec node -- npm install -g oxlint oxfmt
 
-# SSH key
-KEY="$HOME/.ssh/id_ed25519"
-if [ ! -f "$KEY" ]; then
-  ssh-keygen -t ed25519 -C "$GIT_EMAIL" -f "$KEY" -N ""
-fi
-eval "$(ssh-agent -s)"
-ssh-add "$KEY" 2>/dev/null || true
-pbcopy < "$KEY.pub"
-open https://github.com/settings/ssh/new
-
 echo "Done. Open a new terminal to start using fish."
+
+cat <<EOF
+
+SSH key setup — run manually:
+
+  ssh-keygen -t ed25519 -C "$GIT_EMAIL"
+  ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+  pbcopy < ~/.ssh/id_ed25519.pub
+  open https://github.com/settings/ssh/new
+
+Add to ~/.ssh/config:
+
+  Host *
+    AddKeysToAgent yes
+    UseKeychain yes
+    IdentityFile ~/.ssh/id_ed25519
+
+EOF
