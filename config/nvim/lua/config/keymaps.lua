@@ -1,0 +1,2 @@
+-- keymaps defined here extend LazyVim defaults
+-- see :help vim.keymap.set()

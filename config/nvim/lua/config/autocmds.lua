@@ -1,0 +1,2 @@
+-- autocmds defined here extend LazyVim defaults
+-- see :help nvim_create_autocmd()

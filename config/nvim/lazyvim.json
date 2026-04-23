@@ -1,0 +1,5 @@
+{
+  "extras": [
+    "lazyvim.plugins.extras.lang.typescript"
+  ]
+}
