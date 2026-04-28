@@ -4,7 +4,9 @@
   "workbench.activityBar.location": "hidden",
   "http.proxySupport": "off",
   "explorer.confirmDelete": false,
+  "terminal.integrated.defaultProfile.osx": "fish",
   "terminal.integrated.profiles.osx": {
+    "fish": { "path": "/opt/homebrew/bin/fish" },
     "zsh": { "path": "/bin/zsh", "args": ["-l", "-i"] }
   },
   // don't track
