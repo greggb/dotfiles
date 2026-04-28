@@ -10,7 +10,7 @@ The install script:
 
 - Installs Homebrew (if missing)
 - Runs `brew bundle` (core tools)
-- Optionally installs work tools (`Brewfile.work`) and media tools (`Brewfile.media`)
+- Optionally installs work tools (`Brewfile.work`), media tools (`Brewfile.media`), and VS Code extensions (`Brewfile.vscode`)
 - Symlinks `home/` -> `~/` and `config/` -> `~/.config/` via stow
 - Symlinks VS Code settings
 - Prompts for git name/email
@@ -47,6 +47,7 @@ their respective configs (fish functions in `config/fish/functions/`).
 ### Optional installs
 
 ```sh
+brew bundle --file Brewfile.vscode  # VS Code extensions
 brew bundle --file Brewfile.work    # go, helm, kubectl
 brew bundle --file Brewfile.media   # ffmpeg, yt-dlp
 ```

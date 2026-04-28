@@ -42,7 +42,8 @@ alias brwe='brew'
 alias python='python3'
 alias pip='pip3'
 
-# modern replacements (brew install bat eza fd prettyping htop)
+# modern replacements (brew install bat eza fd prettyping htop the_silver_searcher)
+alias ack='ag'
 alias cat='bat'
 alias find='fd'
 alias ls='eza --icons --group-directories-first'

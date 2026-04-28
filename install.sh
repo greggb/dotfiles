@@ -27,15 +27,21 @@ if [ -f "$DOTFILES/Brewfile.media" ]; then
   fi
 fi
 
+# Optional: VS Code extensions and settings
+if [ -f "$DOTFILES/Brewfile.vscode" ]; then
+  read -rp "Install VS Code extensions? [y/N] " VSCODE
+  if [[ "$VSCODE" =~ ^[Yy] ]]; then
+    brew bundle --no-lock --file="$DOTFILES/Brewfile.vscode"
+    VSCODE_DIR="$HOME/Library/Application Support/Code/User"
+    mkdir -p "$VSCODE_DIR"
+    ln -sf "$DOTFILES/vscode/settings.json" "$VSCODE_DIR/settings.json"
+  fi
+fi
+
 # Symlinks via stow
 mkdir -p "$HOME/.config"
 stow --restow --target="$HOME" --dir="$DOTFILES" home
 stow --restow --target="$HOME/.config" --dir="$DOTFILES" config
-
-# VS Code settings (not a stow package, just a single symlink)
-VSCODE_DIR="$HOME/Library/Application Support/Code/User"
-mkdir -p "$VSCODE_DIR"
-ln -sf "$DOTFILES/vscode/settings.json" "$VSCODE_DIR/settings.json"
 
 # Git identity
 read -rp "Git name: " GIT_NAME
