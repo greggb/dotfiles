@@ -28,10 +28,9 @@ function repo -d "Open current git repo in browser"
     set branch (string replace 'refs/heads/' '' $branch)
 
     # Bitbucket uses "src" instead of "tree"
+    set -l tree "tree"
     if string match -q '*bitbucket*' $base_url
-        set -l tree "src"
-    else
-        set -l tree "tree"
+        set tree "src"
     end
 
     set -l url "$base_url/$tree/$branch$relative_path"
