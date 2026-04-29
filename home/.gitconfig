@@ -46,6 +46,22 @@
 	# Prune stale worktree references
 	wtp = worktree prune
 
+[init]
+	defaultBranch = main
+
+[commit]
+	verbose = true
+
+[rerere]
+	enabled = true
+	autoupdate = true
+
+[column]
+	ui = auto
+
+[tag]
+	sort = -version:refname
+
 [apply]
 	# Detect whitespace errors when applying a patch
 	whitespace = fix
@@ -84,7 +100,7 @@
 	# Make `git rebase` safer on OS X
 	# More info: <http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/>
 	trustctime = false
-	editor = vim
+	editor = nvim
 	pager = delta
 
 [pager]
@@ -98,8 +114,10 @@
   	hyperlinks-file-link-format = "vscode://file/{path}:{line}"
 
 [diff]
-	# Detect copies as well as renames
 	renames = copies
+	algorithm = histogram
+	colorMoved = plain
+	mnemonicPrefix = true
 
 [filter "lfs"]
 	required = true
@@ -113,11 +131,11 @@
 	log = true
 
 [pull]
-	ff = only
+	rebase = true
 
 [push]
-	# change to matching for machines with older versions of git 1.x.x
 	default = current
+	autoSetupRemote = true
 
 [rebase]
 	autosquash = true
