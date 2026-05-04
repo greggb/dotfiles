@@ -74,15 +74,8 @@
  tmux split-window -v -p 50 -t "${SESSION_NAME}:1.2" -c "$TARGET_DIR"
 
  # Start apps (bottom shell stays clean)
- if [ "$AGENT_CMD" = "claude" ]; then
-   tmux send-keys -t "${SESSION_NAME}:1.2" "$AGENT_CMD --resume no" Enter
- else
-   tmux send-keys -t "${SESSION_NAME}:1.2" "$AGENT_CMD" Enter
- fi
+ tmux send-keys -t "${SESSION_NAME}:1.2" "$AGENT_CMD" Enter
  tmux send-keys -t "${SESSION_NAME}:1.1" "nvim ." Enter
-
- # Auto-destroy session when detached
- tmux set-option -t "$SESSION_NAME" destroy-unattached on
 
  # Focus the nvim pane
  tmux select-pane -t "${SESSION_NAME}:1.1"
