@@ -89,8 +89,8 @@ mkdir -p "$HOME/.config"
 # Git identity
 read -rp "Git name: " GIT_NAME
 read -rp "Git email: " GIT_EMAIL
-git config -f "$HOME/.gitconfig" user.name "$GIT_NAME"
-git config -f "$HOME/.gitconfig" user.email "$GIT_EMAIL"
+git config -f "$HOME/.gitconfig.local" user.name "$GIT_NAME"
+git config -f "$HOME/.gitconfig.local" user.email "$GIT_EMAIL"
 
 print_ssh_setup
 

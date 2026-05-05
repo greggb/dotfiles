@@ -41,9 +41,10 @@ notes/                      Reference docs (not stowed)
 Both source `~/.aliases` for shared aliases. Shell-specific functions live in
 their respective configs (fish functions in `config/fish/functions/`).
 
-**Machine-local overrides**: create `~/.zshrc.local` or
-`~/.config/fish/config.local.fish` for env vars that shouldn't be committed
-(work credentials, kubernetes configs, etc.). These files are gitignored.
+**Machine-local overrides**: create `~/.zshrc.local`,
+`~/.config/fish/config.local.fish`, or `~/.gitconfig.local` for settings that
+shouldn't be committed (work credentials, kubernetes configs, git identity,
+etc.). These files are gitignored.
 
 ### Optional installs
 
