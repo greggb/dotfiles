@@ -1,7 +1,7 @@
 ### Setup
 
 ```sh
-git clone git@github.com:greggb/dotfiles.git ~/code/dotfiles
+git clone https://github.com/greggb/dotfiles.git ~/code/dotfiles
 cd ~/code/dotfiles
 ./install.sh
 ```
@@ -9,7 +9,8 @@ cd ~/code/dotfiles
 The install script:
 
 - Installs Homebrew (if missing)
-- Runs `brew bundle` (core tools)
+- Disables Homebrew analytics
+- Runs `brew bundle` (core tools) using Homebrew directly, even before `brew` is on your shell path
 - Optionally installs work tools (`Brewfile.work`), media tools (`Brewfile.media`), and VS Code extensions (`Brewfile.vscode`)
 - Symlinks `home/` -> `~/` and `config/` -> `~/.config/` via stow
 - Symlinks VS Code settings
