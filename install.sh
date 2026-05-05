@@ -4,6 +4,26 @@ set -e
 DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 export HOMEBREW_NO_ANALYTICS=1
 
+print_ssh_setup() {
+  cat <<EOF
+
+SSH key setup (run manually):
+
+  ssh-keygen -t ed25519 -C "$GIT_EMAIL"
+  ssh-add --apple-use-keychain ~/.ssh/id_ed25519
+  pbcopy < ~/.ssh/id_ed25519.pub
+  open https://github.com/settings/ssh/new
+
+Add to ~/.ssh/config:
+
+  Host *
+    AddKeysToAgent yes
+    UseKeychain yes
+    IdentityFile ~/.ssh/id_ed25519
+
+EOF
+}
+
 find_brew() {
   if command -v brew >/dev/null 2>&1; then
     command -v brew
@@ -72,6 +92,8 @@ read -rp "Git email: " GIT_EMAIL
 git config -f "$HOME/.gitconfig" user.name "$GIT_NAME"
 git config -f "$HOME/.gitconfig" user.email "$GIT_EMAIL"
 
+print_ssh_setup
+
 # Fish shell
 FISH="$HOMEBREW_PREFIX/bin/fish"
 if ! grep -qF "$FISH" /etc/shells; then
@@ -83,25 +105,10 @@ chsh -s "$FISH"
 sh "$HOME/.macos"
 
 # Node via mise + npm globals
-"$HOMEBREW_PREFIX/bin/mise" install --quiet
-"$HOMEBREW_PREFIX/bin/mise" exec node -- npm install -g oxlint oxfmt @biomejs/biome
+if ! "$HOMEBREW_PREFIX/bin/mise" install --quiet; then
+  echo "mise install failed. Continuing so the rest of the bootstrap can finish." >&2
+elif ! "$HOMEBREW_PREFIX/bin/mise" exec node -- npm install -g oxlint oxfmt @biomejs/biome; then
+  echo "npm global install failed. Continuing so the rest of the bootstrap can finish." >&2
+fi
 
 echo "Done. Open a new terminal to start using fish."
-
-cat <<EOF
-
-SSH key setup (run manually):
-
-  ssh-keygen -t ed25519 -C "$GIT_EMAIL"
-  ssh-add --apple-use-keychain ~/.ssh/id_ed25519
-  pbcopy < ~/.ssh/id_ed25519.pub
-  open https://github.com/settings/ssh/new
-
-Add to ~/.ssh/config:
-
-  Host *
-    AddKeysToAgent yes
-    UseKeychain yes
-    IdentityFile ~/.ssh/id_ed25519
-
-EOF

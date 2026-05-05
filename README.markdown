@@ -17,7 +17,7 @@ The install script:
 - Prompts for git name/email
 - Sets fish as the default shell
 - Applies macOS system preferences
-- Installs node via mise and npm globals (oxlint, oxfmt, biome)
+- Attempts node setup via mise and npm globals (oxlint, oxfmt, biome)
 - Prints SSH key setup instructions
 
 ### Re-applying after changes
