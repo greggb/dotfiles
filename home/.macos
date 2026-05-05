@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-# ~/.macos via https://mths.be/macos
 
-# Modernized for macOS 15 Sequoia, macOS 26 Tahoe
+# ~/.macos - based on https://mths.be/macos
 
 # Close any open settings panes before changing preferences.
 osascript -e 'tell application "System Settings" to quit' 2>/dev/null || true
@@ -37,6 +36,14 @@ defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 # Fast keyboard repeat for developer workflows.
 defaults write NSGlobalDomain KeyRepeat -int 1
 defaults write NSGlobalDomain InitialKeyRepeat -int 10
+
+# Disable user interface sound effects, including Finder trash sounds.
+# Mirrors System Settings > Sound > Play user interface sound effects.
+defaults write NSGlobalDomain "com.apple.sound.uiaudio.enabled" -int 0
+
+# Disable startup chime.
+# Mirrors System Settings > Sound > Play sound on startup.
+sudo nvram "StartupMute=%01" 2>/dev/null || true
 
 ###############################################################################
 # Security                                                                    #
@@ -147,6 +154,15 @@ defaults write com.apple.mail DisableInlineAttachmentViewing -bool true
 # Disable Apple Intelligence. Valid on macOS 15.3+ ARM Macs; harmless as a
 # preference on unsupported versions.
 defaults write com.apple.CloudSubscriptionFeatures.optIn "545129924" -bool false
+
+###############################################################################
+# Notes                                                                       #
+###############################################################################
+
+# Trash retention: Finder only exposes a supported 30-day auto-empty setting:
+#   defaults write com.apple.finder FXRemoveOldTrashItems -bool true
+# Do not enable it here because the desired retention is 90 days. Use a separate
+# LaunchAgent/script if 90-day cleanup is required.
 
 ###############################################################################
 # Restart Affected Applications                                                #
