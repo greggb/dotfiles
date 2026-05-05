@@ -10,6 +10,12 @@ osascript -e 'tell application "System Preferences" to quit' 2>/dev/null || true
 # General UI/UX                                                               #
 ###############################################################################
 
+# Use dark mode.
+defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
+
+# Disable automatic light/dark mode switching.
+defaults write NSGlobalDomain AppleInterfaceStyleSwitchesAutomatically -bool false
+
 # Expand save panel by default.
 defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode -bool true
 defaults write NSGlobalDomain NSNavPanelExpandedStateForSaveMode2 -bool true
