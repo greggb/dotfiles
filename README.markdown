@@ -50,6 +50,8 @@ their respective configs (fish functions in `config/fish/functions/`).
 brew bundle --file Brewfile.vscode  # VS Code extensions
 brew bundle --file Brewfile.work    # go, helm, kubectl
 brew bundle --file Brewfile.media   # ffmpeg, yt-dlp
+# Clear the default dock apps
+defaults write com.apple.dock persistent-apps -array && killall Dock
 ```
 
 ### Notes
