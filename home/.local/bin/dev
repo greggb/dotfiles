@@ -1,88 +1,90 @@
- #!/usr/bin/env bash
- # dev — open a tmux dev session with nvim, claude/opencode, and a shell
- # Usage: dev [--opencode|-o] [path]
+#!/usr/bin/env bash
+# dev — open a tmux dev session with nvim, claude/opencode, and a shell
+# Usage: dev [--opencode|-o] [path]
 
- set -e
+set -e
 
- if ! command -v tmux &>/dev/null; then
-   echo "error: tmux is not installed (brew install tmux)" >&2
-   exit 1
- fi
+if ! command -v tmux &>/dev/null; then
+  echo "error: tmux is not installed (brew install tmux)" >&2
+  exit 1
+fi
 
- AGENT_CMD="claude"
- TARGET_DIR="."
+AGENT_CMD="claude"
+TARGET_DIR="."
 
- while [ "$#" -gt 0 ]; do
-   case "$1" in
-     -o | --opencode)
-       AGENT_CMD="opencode"
-       ;;
-     -h | --help)
-       echo "Usage: dev [--opencode|-o] [path]"
-       exit 0
-       ;;
-     --)
-       shift
-       break
-       ;;
-     -* )
-       echo "error: unknown flag: $1" >&2
-       exit 1
-       ;;
-     *)
-       TARGET_DIR="$1"
-       ;;
-   esac
-   shift
- done
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -o | --opencode)
+      AGENT_CMD="opencode"
+      ;;
+    -h | --help)
+      echo "Usage: dev [--opencode|-o] [path]"
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -* )
+      echo "error: unknown flag: $1" >&2
+      exit 1
+      ;;
+    *)
+      TARGET_DIR="$1"
+      ;;
+  esac
+  shift
+done
 
- if [ "$#" -gt 0 ]; then
-   TARGET_DIR="$1"
- fi
+if [ "$#" -gt 0 ]; then
+  TARGET_DIR="$1"
+fi
 
- TARGET_DIR="$(cd "$TARGET_DIR" 2>/dev/null && pwd)" || {
-   echo "error: directory not found: $TARGET_DIR" >&2
-   exit 1
- }
+TARGET_DIR="$(cd "$TARGET_DIR" 2>/dev/null && pwd)" || {
+  echo "error: directory not found: $TARGET_DIR" >&2
+  exit 1
+}
 
- BASE_NAME="$(basename "$TARGET_DIR")"
+BASE_NAME="$(basename "$TARGET_DIR")"
 
- # Sanitize session name (tmux doesn't allow dots or colons)
- BASE_NAME="${BASE_NAME//[.:]/–}"
+# Sanitize session name (tmux doesn't allow dots or colons)
+BASE_NAME="${BASE_NAME//[.:]/–}"
 
- # Append a short suffix so each invocation gets a fresh session
- SESSION_NAME="dev/${BASE_NAME}-$(date +%s)"
+# Append a short suffix so each invocation gets a fresh session
+SESSION_NAME="dev/${BASE_NAME}-$(date +%s)"
 
- # Kill any detached dev sessions with no clients attached
- while IFS= read -r old; do
-   [ -z "$old" ] && continue
-   tmux kill-session -t "=$old" 2>/dev/null
- done < <(tmux list-sessions -F '#{session_name} #{session_attached}' 2>/dev/null \
-   | awk '$1 ~ /^dev\// && $2 == "0" { print $1 }')
+# Kill any detached dev sessions with no clients attached
+while IFS= read -r old; do
+  [ -z "$old" ] && continue
+  tmux kill-session -t "=$old" 2>/dev/null
+done < <(tmux list-sessions -F '#{session_name} #{session_attached}' 2>/dev/null \
+  | awk '$1 ~ /^dev\// && $2 == "0" { print $1 }')
 
- # Detect terminal dimensions for the new session
- COLS=$(tput cols 2>/dev/null || echo 220)
- ROWS=$(tput lines 2>/dev/null || echo 50)
+# Detect terminal dimensions for the new session
+COLS=$(tput cols 2>/dev/null || echo 220)
+ROWS=$(tput lines 2>/dev/null || echo 50)
 
- # Create detached session — first pane is the nvim pane (full height, left)
- tmux new-session -d -s "$SESSION_NAME" -c "$TARGET_DIR" -x "$COLS" -y "$ROWS"
+# Create detached session — first pane is the nvim pane (full height, left)
+tmux new-session -d -s "$SESSION_NAME" -c "$TARGET_DIR" -x "$COLS" -y "$ROWS"
 
- # Split right column (35% of width) — this pane will become the agent
- tmux split-window -h -p 35 -t "${SESSION_NAME}:1" -c "$TARGET_DIR"
+# Split right column (35% of width) — this pane will become the agent
+tmux split-window -h -p 35 -t "${SESSION_NAME}:1" -c "$TARGET_DIR"
 
- # Split the right pane vertically — bottom becomes the plain shell
- tmux split-window -v -p 50 -t "${SESSION_NAME}:1.2" -c "$TARGET_DIR"
+# Split the right pane vertically — bottom becomes the plain shell
+tmux split-window -v -p 50 -t "${SESSION_NAME}:1.2" -c "$TARGET_DIR"
 
- # Start apps (bottom shell stays clean)
- tmux send-keys -t "${SESSION_NAME}:1.2" "$AGENT_CMD" Enter
- tmux send-keys -t "${SESSION_NAME}:1.1" "nvim ." Enter
+# Start apps (bottom shell stays clean)
+AGENT_LAUNCH="$AGENT_CMD"
+[ "$AGENT_CMD" = "claude" ] && AGENT_LAUNCH="claude --model claude-opus-4-6"
+tmux send-keys -t "${SESSION_NAME}:1.2" "$AGENT_LAUNCH" Enter
+tmux send-keys -t "${SESSION_NAME}:1.1" "nvim ." Enter
 
- # Focus the nvim pane
- tmux select-pane -t "${SESSION_NAME}:1.1"
+# Focus the nvim pane
+tmux select-pane -t "${SESSION_NAME}:1.1"
 
- # Attach (or switch if already inside tmux)
- if [ -n "$TMUX" ]; then
-   tmux switch-client -t "=$SESSION_NAME"
- else
-   tmux attach-session -t "=$SESSION_NAME"
- fi
+# Attach (or switch if already inside tmux)
+if [ -n "$TMUX" ]; then
+  tmux switch-client -t "=$SESSION_NAME"
+else
+  tmux attach-session -t "=$SESSION_NAME"
+fi
