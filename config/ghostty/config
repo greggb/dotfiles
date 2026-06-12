@@ -8,8 +8,10 @@
 
 # --- Key Bindings ---
 keybind = shift+enter=text:\n
+keybind = super+c=copy_to_clipboard
 
 # --- Pane Settings ---
 focus-follows-mouse=true
 split-divider-color="#FF69B4"
 unfocused-split-opacity=0.45
+theme = TokyoNight

@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+# devc — open a cmux workspace with nvim, claude/opencode, and a shell
+# Usage: devc [--opencode|-o] [path]
+
+set -e
+
+if ! command -v cmux &>/dev/null; then
+  echo "error: cmux is not installed or not on PATH" >&2
+  exit 1
+fi
+
+AGENT_CMD="claude"
+TARGET_DIR="."
+
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -o | --opencode)
+      AGENT_CMD="opencode"
+      ;;
+    -h | --help)
+      echo "Usage: devc [--opencode|-o] [path]"
+      exit 0
+      ;;
+    --)
+      shift
+      break
+      ;;
+    -* )
+      echo "error: unknown flag: $1" >&2
+      exit 1
+      ;;
+    *)
+      TARGET_DIR="$1"
+      ;;
+  esac
+  shift
+done
+
+if [ "$#" -gt 0 ]; then
+  TARGET_DIR="$1"
+fi
+
+TARGET_DIR="$(cd "$TARGET_DIR" 2>/dev/null && pwd)" || {
+  echo "error: directory not found: $TARGET_DIR" >&2
+  exit 1
+}
+
+BASE_NAME="$(basename "$TARGET_DIR")"
+BASE_NAME="${BASE_NAME//[.:]/–}"
+WORKSPACE_NAME="dev/${BASE_NAME}-$(date +%s)"
+
+AGENT_LAUNCH="$AGENT_CMD"
+[ "$AGENT_CMD" = "claude" ] && AGENT_LAUNCH="claude --model claude-opus-4-6"
+
+# Layout: horizontal split 60/40; right column split vertically 50/50.
+# DFS pane order: 1 = nvim (left), 2 = agent (top-right), 3 = shell (bottom-right).
+LAYOUT=$(cat <<EOF
+{"direction":"horizontal","split":0.60,"children":[{"pane":{"surfaces":[{"type":"terminal","command":"nvim ."}]}},{"direction":"vertical","split":0.5,"children":[{"pane":{"surfaces":[{"type":"terminal","command":"${AGENT_LAUNCH}"}]}},{"pane":{"surfaces":[{"type":"terminal"}]}}]}]}
+EOF
+)
+
+cmux new-workspace \
+  --name "$WORKSPACE_NAME" \
+  --cwd "$TARGET_DIR" \
+  --layout "$LAYOUT" \
+  --focus true >/dev/null
+
+WS_REF="$(cmux current-workspace 2>/dev/null | awk '/workspace:/{print $1; exit}')"
+[ -z "$WS_REF" ] && WS_REF="$(cmux current-workspace 2>/dev/null | head -n1)"
+
+if [ -n "$WS_REF" ]; then
+  cmux focus-pane --workspace "$WS_REF" --pane pane:2 >/dev/null 2>&1 || true
+fi
