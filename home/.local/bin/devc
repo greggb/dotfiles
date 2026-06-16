@@ -59,7 +59,7 @@ LAYOUT=$(cat <<EOF
 EOF
 )
 
-cmux new-workspace \
+cmux workspace create \
   --name "$WORKSPACE_NAME" \
   --cwd "$TARGET_DIR" \
   --layout "$LAYOUT" \
