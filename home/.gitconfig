@@ -143,14 +143,10 @@
 	sort = -committerdate
 
 [url "git@github.com:"]
-	pushInsteadOf = https://github.com/
-	pushInsteadOf = "github:"
-	pushInsteadOf = "git://github.com/"
-[url "git://github.com/"]
-	insteadOf = "github:"
+	insteadOf = https://github.com/
+	insteadOf = github:
+	insteadOf = git://github.com/
 [url "git@gist.github.com:"]
-	insteadOf = "gst:"
-	pushInsteadOf = "gist:"
-	pushInsteadOf = "git://gist.github.com/"
-[url "git://gist.github.com/"]
-	insteadOf = "gist:"
+	insteadOf = gst:
+	insteadOf = gist:
+	insteadOf = git://gist.github.com/

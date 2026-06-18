@@ -8,17 +8,17 @@ cd ~/code/dotfiles
 
 The install script:
 
+- Prompts for git name/email
+- Generates an SSH key and adds it to GitHub (skipped if already configured)
 - Installs Homebrew (if missing)
 - Disables Homebrew analytics
 - Runs `brew bundle` (core tools) using Homebrew directly, even before `brew` is on your shell path
 - Optionally installs work tools (`Brewfile.work`), media tools (`Brewfile.media`), and VS Code extensions (`Brewfile.vscode`)
 - Symlinks `home/` -> `~/` and `config/` -> `~/.config/` via stow
 - Symlinks VS Code settings
-- Prompts for git name/email
 - Sets fish as the default shell
 - Applies macOS system preferences
 - Attempts node setup via mise and npm globals (oxlint, oxfmt, biome)
-- Prints SSH key setup instructions
 
 ### Re-applying after changes
 

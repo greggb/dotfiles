@@ -4,24 +4,39 @@ set -e
 DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 export HOMEBREW_NO_ANALYTICS=1
 
-print_ssh_setup() {
-  cat <<EOF
+setup_ssh() {
+  if ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
+    return 0
+  fi
 
-SSH key setup (run manually):
+  echo "Setting up SSH key for GitHub..."
 
-  ssh-keygen -t ed25519 -C "$GIT_EMAIL"
-  ssh-add --apple-use-keychain ~/.ssh/id_ed25519
-  pbcopy < ~/.ssh/id_ed25519.pub
-  open https://github.com/settings/ssh/new
+  if [ ! -f "$HOME/.ssh/id_ed25519" ]; then
+    mkdir -p "$HOME/.ssh" && chmod 700 "$HOME/.ssh"
+    ssh-keygen -t ed25519 -C "$GIT_EMAIL" -f "$HOME/.ssh/id_ed25519"
+  fi
 
-Add to ~/.ssh/config:
+  ssh-add --apple-use-keychain "$HOME/.ssh/id_ed25519"
 
-  Host *
-    AddKeysToAgent yes
-    UseKeychain yes
-    IdentityFile ~/.ssh/id_ed25519
-
+  touch "$HOME/.ssh/config" && chmod 600 "$HOME/.ssh/config"
+  if ! grep -q "IdentityFile.*id_ed25519" "$HOME/.ssh/config"; then
+    cat >> "$HOME/.ssh/config" <<'EOF'
+Host *
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_ed25519
 EOF
+  fi
+
+  pbcopy < "$HOME/.ssh/id_ed25519.pub"
+  echo "Public key copied to clipboard."
+  open https://github.com/settings/ssh/new
+  read -rp "Press enter once the key is added to GitHub... " _
+
+  if ! ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
+    echo "SSH authentication failed. Check the key was added and try again." >&2
+    exit 1
+  fi
 }
 
 find_brew() {
@@ -39,6 +54,12 @@ find_brew() {
 
   return 1
 }
+
+# Git identity (email also used as SSH key comment)
+read -rp "Git name: " GIT_NAME
+read -rp "Git email: " GIT_EMAIL
+
+setup_ssh
 
 # Homebrew
 if ! BREW="$(find_brew)"; then
@@ -86,13 +107,8 @@ mkdir -p "$HOME/.config"
 "$HOMEBREW_PREFIX/bin/stow" --restow --target="$HOME" --dir="$DOTFILES" home
 "$HOMEBREW_PREFIX/bin/stow" --restow --target="$HOME/.config" --dir="$DOTFILES" config
 
-# Git identity
-read -rp "Git name: " GIT_NAME
-read -rp "Git email: " GIT_EMAIL
 git config -f "$HOME/.gitconfig.local" user.name "$GIT_NAME"
 git config -f "$HOME/.gitconfig.local" user.email "$GIT_EMAIL"
-
-print_ssh_setup
 
 # Fish shell
 FISH="$HOMEBREW_PREFIX/bin/fish"
