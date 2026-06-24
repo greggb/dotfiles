@@ -14,8 +14,7 @@ mkdir -p \
   "$HOME/.config/tmux" \
   "$HOME/.config/zed" \
   "$HOME/.local/bin" \
-  "$HOME/.ssh" \
-  "$HOME/Library/Application Support/Code/User"
+  "$HOME/.ssh"
 
 chmod 700 "$HOME/.ssh"
 touch "$HOME/.ssh/config"

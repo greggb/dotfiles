@@ -11,13 +11,4 @@ if [ "$(uname -m)" != "arm64" ]; then
   exit 1
 fi
 
-if [ ! -x /opt/homebrew/bin/brew ]; then
-  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-fi
-
-if [ ! -x /opt/homebrew/bin/brew ]; then
-  echo "Homebrew installation finished, but /opt/homebrew/bin/brew was not found." >&2
-  exit 1
-fi
-
-/opt/homebrew/bin/brew analytics off
+export HOMEBREW_NO_ANALYTICS=1

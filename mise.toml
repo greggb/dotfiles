@@ -2,11 +2,13 @@ min_version = { hard = "2026.6.13" }
 
 [settings]
 experimental = true
-trusted_config_paths = ["~/code/dotfiles"]
 dotfiles.default_mode = "symlink"
+idiomatic_version_file_enable_tools = ["python"]
+python.uv_venv_auto = "source"
 
 [env]
 HOMEBREW_NO_ANALYTICS = "1"
+UV_PYTHON = { value = "{{ tools.python.path }}", tools = true }
 
 [env._]
 path = ["/opt/homebrew/bin", "/opt/homebrew/sbin", "~/.local/bin"]
@@ -40,16 +42,13 @@ run = "$HOME/code/dotfiles/scripts/bootstrap/pre-user.sh"
 "brew:git-extras" = "latest"
 "brew:htop" = "latest"
 "brew:lazygit" = "latest"
-"brew:mise" = "latest"
 "brew:neovim" = "latest"
 "brew:ollama" = "latest"
 "brew:prettyping" = "latest"
-"brew:python3" = "latest"
 "brew:ripgrep" = "latest"
 "brew:starship" = "latest"
 "brew:the_silver_searcher" = "latest"
 "brew:tmux" = "latest"
-"brew:uv" = "latest"
 "brew-cask:claude-code" = "latest"
 "brew-cask:ghostty" = "latest"
 "brew-cask:keepingyouawake" = "latest"
@@ -73,7 +72,6 @@ run = "$HOME/code/dotfiles/scripts/bootstrap/pre-user.sh"
 "~/.config/mise/config.toml" = { source = "~/code/dotfiles/mise.toml", mode = "symlink" }
 "~/.config/mise/config.work.toml" = { source = "~/code/dotfiles/mise.work.toml", mode = "symlink" }
 "~/.config/mise/config.media.toml" = { source = "~/code/dotfiles/mise.media.toml", mode = "symlink" }
-"~/Library/Application Support/Code/User/settings.json" = { source = "~/code/dotfiles/vscode/settings.json", mode = "symlink" }
 "~/.ssh/config/github" = { block = '''
 Host *
   AddKeysToAgent yes
@@ -150,6 +148,8 @@ login_shell = "/opt/homebrew/bin/fish"
 [tools]
 node = { version = "22", postinstall = "corepack enable" }
 pnpm = "10"
+python = "3.13"
+uv = "latest"
 "npm:oxlint" = { version = "latest", depends = "node" }
 "npm:oxfmt" = { version = "latest", depends = "node" }
 "npm:@biomejs/biome" = { version = "latest", depends = "node" }
