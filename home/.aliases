@@ -42,7 +42,7 @@ alias brwe='brew'
 alias python='python3'
 alias pip='pip3'
 
-# modern replacements (brew install bat eza fd prettyping htop the_silver_searcher)
+# modern replacements installed by mise bootstrap
 alias ack='ag'
 alias cat='bat'
 alias find='fd'
@@ -52,7 +52,7 @@ alias ping='prettyping --nolegend'
 alias preview="fzf --preview 'bat --color \"always\" {}'"
 alias top="sudo htop"
 
-# media (requires yt-dlp: brew bundle --file Brewfile.media)
+# media tools are installed with MISE_ENV=media mise bootstrap
 alias dl="yt-dlp -ciw --trim-filenames 200 -S res,ext:mp4:m4a --recode-video mp4"
 alias dls="yt-dlp -ciw --extract-audio --audio-quality 0 --audio-format mp3 --trim-filenames 200"
 

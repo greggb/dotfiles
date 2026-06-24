@@ -1,5 +1,0 @@
-brew "bjarneo/cliamp/cliamp"
-brew "ffmpeg"
-brew 'x264'
-brew 'x265'
-brew "yt-dlp"

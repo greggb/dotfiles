@@ -1,5 +1,7 @@
-if test -d "$HOME/.local/bin"
-    fish_add_path "$HOME/.local/bin"
+for bin_path in /opt/homebrew/bin /opt/homebrew/sbin "$HOME/.local/bin"
+    if test -d "$bin_path"
+        fish_add_path "$bin_path"
+    end
 end
 
 set -gx EDITOR nvim

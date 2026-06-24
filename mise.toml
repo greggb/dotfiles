@@ -1,0 +1,159 @@
+min_version = { hard = "2026.6.13" }
+
+[settings]
+experimental = true
+trusted_config_paths = ["~/code/dotfiles"]
+dotfiles.default_mode = "symlink"
+
+[env]
+HOMEBREW_NO_ANALYTICS = "1"
+
+[env._]
+path = ["/opt/homebrew/bin", "/opt/homebrew/sbin", "~/.local/bin"]
+
+[bootstrap.hooks.pre-packages]
+run = "$HOME/code/dotfiles/scripts/bootstrap/pre-packages.sh"
+
+[bootstrap.hooks.pre-dotfiles]
+run = "$HOME/code/dotfiles/scripts/bootstrap/pre-dotfiles.sh"
+
+[bootstrap.hooks.pre-defaults]
+run = "$HOME/code/dotfiles/scripts/bootstrap/macos-pre-defaults.sh"
+
+[bootstrap.hooks.post-defaults]
+run = "$HOME/code/dotfiles/scripts/bootstrap/macos-post-defaults.sh"
+
+[bootstrap.hooks.pre-user]
+run = "$HOME/code/dotfiles/scripts/bootstrap/pre-user.sh"
+
+[bootstrap.packages]
+"brew:bat" = "latest"
+"brew:bash" = "latest"
+"brew:curl" = "latest"
+"brew:eza" = "latest"
+"brew:fd" = "latest"
+"brew:fish" = "latest"
+"brew:fzf" = "latest"
+"brew:gh" = "latest"
+"brew:git" = "latest"
+"brew:git-delta" = "latest"
+"brew:git-extras" = "latest"
+"brew:htop" = "latest"
+"brew:lazygit" = "latest"
+"brew:mise" = "latest"
+"brew:neovim" = "latest"
+"brew:ollama" = "latest"
+"brew:prettyping" = "latest"
+"brew:python3" = "latest"
+"brew:ripgrep" = "latest"
+"brew:starship" = "latest"
+"brew:the_silver_searcher" = "latest"
+"brew:tmux" = "latest"
+"brew:uv" = "latest"
+"brew-cask:claude-code" = "latest"
+"brew-cask:ghostty" = "latest"
+"brew-cask:keepingyouawake" = "latest"
+
+[dotfiles]
+"~/.aliases" = { source = "~/code/dotfiles/home/.aliases", mode = "symlink" }
+"~/.gitconfig" = { source = "~/code/dotfiles/home/.gitconfig", mode = "symlink" }
+"~/.zshrc" = { source = "~/code/dotfiles/home/.zshrc", mode = "symlink" }
+"~/.local/bin" = { source = "~/code/dotfiles/home/.local/bin", mode = "symlink-each" }
+"~/.config/aerospace/aerospace.toml" = { source = "~/code/dotfiles/config/aerospace/aerospace.toml", mode = "symlink" }
+"~/.config/fish/config.fish" = { source = "~/code/dotfiles/config/fish/config.fish", mode = "symlink" }
+"~/.config/fish/fish_variables" = { source = "~/code/dotfiles/config/fish/fish_variables", mode = "symlink" }
+"~/.config/fish/completions/*.fish" = "~/code/dotfiles/config/fish/completions/*.fish"
+"~/.config/fish/conf.d/*.fish" = "~/code/dotfiles/config/fish/conf.d/*.fish"
+"~/.config/fish/functions/*.fish" = "~/code/dotfiles/config/fish/functions/*.fish"
+"~/.config/ghostty/config" = { source = "~/code/dotfiles/config/ghostty/config", mode = "symlink" }
+"~/.config/lazygit/config.yml" = { source = "~/code/dotfiles/config/lazygit/config.yml", mode = "symlink" }
+"~/.config/nvim" = { source = "~/code/dotfiles/config/nvim", mode = "symlink-each" }
+"~/.config/tmux" = { source = "~/code/dotfiles/config/tmux", mode = "symlink-each" }
+"~/.config/zed/settings.json" = { source = "~/code/dotfiles/config/zed/settings.json", mode = "symlink" }
+"~/.config/mise/config.toml" = { source = "~/code/dotfiles/mise.toml", mode = "symlink" }
+"~/.config/mise/config.work.toml" = { source = "~/code/dotfiles/mise.work.toml", mode = "symlink" }
+"~/.config/mise/config.media.toml" = { source = "~/code/dotfiles/mise.media.toml", mode = "symlink" }
+"~/Library/Application Support/Code/User/settings.json" = { source = "~/code/dotfiles/vscode/settings.json", mode = "symlink" }
+"~/.ssh/config/github" = { block = '''
+Host *
+  AddKeysToAgent yes
+  UseKeychain yes
+  IdentityFile ~/.ssh/id_ed25519
+''' }
+
+[bootstrap.macos.defaults.NSGlobalDomain]
+AppleInterfaceStyle = "Dark"
+AppleInterfaceStyleSwitchesAutomatically = false
+NSNavPanelExpandedStateForSaveMode = true
+NSNavPanelExpandedStateForSaveMode2 = true
+NSDocumentSaveNewDocumentsToCloud = false
+NSQuitAlwaysKeepsWindows = false
+NSAutomaticCapitalizationEnabled = false
+NSAutomaticDashSubstitutionEnabled = false
+NSAutomaticPeriodSubstitutionEnabled = false
+NSAutomaticQuoteSubstitutionEnabled = false
+NSAutomaticSpellingCorrectionEnabled = false
+AppleKeyboardUIMode = 3
+ApplePressAndHoldEnabled = false
+KeyRepeat = 1
+InitialKeyRepeat = 10
+"com.apple.sound.uiaudio.enabled" = 0
+AppleShowAllExtensions = true
+"com.apple.springing.enabled" = true
+"com.apple.springing.delay" = 0.0
+
+[bootstrap.macos.defaults."com.apple.screensaver"]
+askForPassword = 1
+askForPasswordDelay = 0
+
+[bootstrap.macos.defaults."com.apple.finder"]
+ShowStatusBar = true
+ShowPathbar = true
+_FXSortFoldersFirst = true
+FXDefaultSearchScope = "SCcf"
+FXEnableExtensionChangeWarning = false
+_FXEnableColumnAutoSizing = true
+OpenWindowForNewRemovableDisk = true
+WarnOnEmptyTrash = false
+
+[bootstrap.macos.defaults."com.apple.desktopservices"]
+DSDontWriteNetworkStores = true
+DSDontWriteUSBStores = true
+
+[bootstrap.macos.defaults."com.apple.frameworks.diskimages"]
+"auto-open-ro-root" = true
+"auto-open-rw-root" = true
+
+[bootstrap.macos.defaults."com.apple.dock"]
+autohide = true
+"autohide-delay" = 0.0
+"autohide-time-modifier" = 0.0
+"show-recents" = false
+"mru-spaces" = false
+
+[bootstrap.macos.defaults."com.apple.screencapture"]
+"disable-shadow" = true
+"show-thumbnail" = false
+
+[bootstrap.macos.defaults."com.apple.mail"]
+DisableReplyAnimations = true
+DisableSendAnimations = true
+AddressesIncludeNameOnPasteboard = false
+DisableInlineAttachmentViewing = true
+
+[bootstrap.macos.defaults."com.apple.CloudSubscriptionFeatures.optIn"]
+"545129924" = false
+
+[bootstrap.user]
+login_shell = "/opt/homebrew/bin/fish"
+
+[tools]
+node = { version = "22", postinstall = "corepack enable" }
+pnpm = "10"
+"npm:oxlint" = { version = "latest", depends = "node" }
+"npm:oxfmt" = { version = "latest", depends = "node" }
+"npm:@biomejs/biome" = { version = "latest", depends = "node" }
+
+[tasks.bootstrap]
+description = "Finish machine-local bootstrap steps"
+run = "$HOME/code/dotfiles/scripts/bootstrap/finalize.sh"

@@ -1,0 +1,7 @@
+[bootstrap.packages]
+"brew:awscli" = "latest"
+"brew:colima" = "latest"
+"brew:docker" = "latest"
+"brew:helm" = "latest"
+"brew:kubernetes-cli" = "latest"
+"brew:kubectl" = "latest"

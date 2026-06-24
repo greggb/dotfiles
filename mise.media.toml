@@ -1,0 +1,9 @@
+[bootstrap.brew.taps]
+"bjarneo/cliamp" = "https://github.com/bjarneo/homebrew-cliamp.git"
+
+[bootstrap.packages]
+"brew:bjarneo/cliamp/cliamp" = "latest"
+"brew:ffmpeg" = "latest"
+"brew:x264" = "latest"
+"brew:x265" = "latest"
+"brew:yt-dlp" = "latest"

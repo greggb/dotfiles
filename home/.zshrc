@@ -1,7 +1,11 @@
 export EDITOR='nvim'
 
+if [ -x /opt/homebrew/bin/brew ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
 # Shared aliases (same file fish sources)
-source $HOME/.aliases
+source "$HOME/.aliases"
 
 # zsh-specific
 alias zshconfig="$EDITOR ~/.zshrc"

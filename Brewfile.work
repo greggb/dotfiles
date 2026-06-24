@@ -1,6 +1,0 @@
-brew "awscli"
-brew "colima"
-brew "docker"
-brew "helm"
-brew "kubernetes-cli"
-brew "kubectl"
