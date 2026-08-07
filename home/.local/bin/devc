@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# devc — open a cmux workspace with nvim, claude/opencode, and a shell
-# Usage: devc [--opencode|-o] [path]
+# devc — open a cmux workspace with nvim, an agent, and a shell
+# Usage: devc [--opencode|-o|--pi] [path]
 
 set -e
 
@@ -17,8 +17,11 @@ while [ "$#" -gt 0 ]; do
     -o | --opencode)
       AGENT_CMD="opencode"
       ;;
+    --pi)
+      AGENT_CMD="pi"
+      ;;
     -h | --help)
-      echo "Usage: devc [--opencode|-o] [path]"
+      echo "Usage: devc [--opencode|-o|--pi] [path]"
       exit 0
       ;;
     --)
