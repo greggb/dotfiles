@@ -1,3 +1,10 @@
+# Homebrew: prefer native Apple Silicon prefix, fall back to Intel
+if test -x /opt/homebrew/bin/brew
+    /opt/homebrew/bin/brew shellenv | source
+else if test -x /usr/local/bin/brew
+    /usr/local/bin/brew shellenv | source
+end
+
 if test -d "$HOME/.local/bin"
     fish_add_path "$HOME/.local/bin"
 end

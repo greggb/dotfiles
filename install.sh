@@ -40,17 +40,18 @@ EOF
 }
 
 find_brew() {
-  if command -v brew >/dev/null 2>&1; then
-    command -v brew
-    return 0
-  fi
-
+  # Prefer the native Apple Silicon prefix over whatever is on PATH.
   for brew_path in /opt/homebrew/bin/brew /usr/local/bin/brew; do
     if [ -x "$brew_path" ]; then
       printf '%s\n' "$brew_path"
       return 0
     fi
   done
+
+  if command -v brew >/dev/null 2>&1; then
+    command -v brew
+    return 0
+  fi
 
   return 1
 }
@@ -70,6 +71,12 @@ if ! BREW="$(find_brew)"; then
   fi
 fi
 HOMEBREW_PREFIX="$($BREW --prefix)"
+
+if [ "$(sysctl -n hw.optional.arm64 2>/dev/null)" = "1" ] && [ "$HOMEBREW_PREFIX" = "/usr/local" ]; then
+  echo "Apple Silicon Mac but Homebrew is the Intel install at /usr/local." >&2
+  echo "Install native Homebrew (/opt/homebrew) from a non-Rosetta terminal first." >&2
+  exit 1
+fi
 "$BREW" analytics off
 
 # Core packages (includes stow, mise, fish, etc.)
