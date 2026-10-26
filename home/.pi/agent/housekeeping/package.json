@@ -1,0 +1,8 @@
+{
+  "name": "pi-housekeeping",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "JITI_FS_CACHE=false node --test tests/*.test.ts tests/*.test.mjs"
+  }
+}

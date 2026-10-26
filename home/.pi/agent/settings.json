@@ -1,0 +1,74 @@
+{
+  "$schema": "https://pi.dev/schemas/settings.schema.json",
+  "defaultProvider": "github-copilot",
+  "defaultModel": "claude-opus-5.5",
+  "defaultThinkingLevel": "high",
+  "modelThinkingLevels": {
+    "github-copilot/gpt-6-luna": "medium"
+  },
+  "defaultTools": [
+    "read",
+    "bash",
+    "edit",
+    "write",
+    "grep",
+    "find",
+    "ls"
+  ],
+  "theme": "dark",
+  "hideThinkingBlock": false,
+  "quietStartup": false,
+  "tuiMode": "fullscreen",
+  "defaultProjectTrust": "ask",
+  "enableInstallTelemetry": false,
+  "enableAnalytics": false,
+  "enableSkillCommands": true,
+  "collapseChangelog": true,
+  "compaction": {
+    "enabled": true,
+    "reserveTokens": 16384,
+    "keepRecentTokens": 20000
+  },
+  "retry": {
+    "enabled": true,
+    "maxRetries": 2,
+    "baseDelayMs": 2000,
+    "provider": {
+      "maxRetries": 0,
+      "maxRetryDelayMs": 15000
+    }
+  },
+  "steeringMode": "one-at-a-time",
+  "followUpMode": "one-at-a-time",
+  "extensions": [
+    "/Users/gregg.brewster/.pi/agent/workflow/extension.ts",
+    "/Users/gregg.brewster/.pi/agent/workflow/parent-policy.ts",
+    "/Users/gregg.brewster/.pi/agent/footer/readable-footer.ts",
+    "/Users/gregg.brewster/.pi/agent/housekeeping/shared-instructions.ts",
+    "/Users/gregg.brewster/.pi/agent/housekeeping/prune.ts"
+  ],
+  "skills": [
+    "/Users/gregg.brewster/.claude/skills",
+    "-/Users/gregg.brewster/.claude/skills/hono-backend",
+    "-/Users/gregg.brewster/.claude/skills/playwright-best-practices",
+    "-/Users/gregg.brewster/.claude/skills/leafygreen",
+    "-/Users/gregg.brewster/.claude/skills/codebase-health",
+    "-/Users/gregg.brewster/.claude/skills/find-skills",
+    "-/Users/gregg.brewster/.claude/skills/code-cleanup",
+    "-/Users/gregg.brewster/.claude/skills/deslop"
+  ],
+  "packages": [],
+  "npmCommand": [
+    "/opt/homebrew/opt/mise/bin/mise",
+    "exec",
+    "node@24.15.0",
+    "--",
+    "npm"
+  ],
+  "shellCommandPrefix": "eval \"$(/opt/homebrew/opt/mise/bin/mise env -s bash 2>/dev/null)\"",
+  "terminal": {
+    "showImages": true,
+    "showTerminalProgress": true
+  },
+  "lastChangelogVersion": "1.4.0"
+}

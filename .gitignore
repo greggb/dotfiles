@@ -5,3 +5,14 @@ npm-debug.log
 !.local/
 **/.local/*
 !**/.local/bin/
+
+# Pi agent: only hand-written config/extensions are tracked; never credentials or state.
+home/.pi/agent/auth.json
+home/.pi/agent/mcp*.json
+home/.pi/agent/models*.json
+home/.pi/agent/sessions/
+home/.pi/agent/subagent-logs/
+home/.pi/agent/git/
+home/.pi/agent/npm/
+home/.pi/agent/settings.json.lock
+home/.pi/agent/workflow/verification/
