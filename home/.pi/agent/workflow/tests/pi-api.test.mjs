@@ -49,6 +49,9 @@ test("model-visible tasks-only requests validate and reach dispatch; obsolete du
   assert.equal(loaded.extensions.length, 1);
   const extension = loaded.extensions[0];
   assert.ok(extension.commands.has("agents"));
+  let costReport = "";
+  await extension.commands.get("task-cost").handler("", { sessionManager: { getBranch: () => [] }, ui: { notify(text) { costReport = text; } } });
+  assert.equal(costReport, "No recorded model usage on this branch yet.");
   let agents = "";
   await extension.commands.get("agents").handler("", { ui: { notify(text) { agents = text; } } });
   for (const [agent, label] of [["explore", "Luna"], ["diagnose", "Luna"], ["implementer", "Sol"], ["reviewer", "Sol"], ["reviewer-deepseek", "DeepSeek"], ["reviewer-opus", "Opus"]]) {

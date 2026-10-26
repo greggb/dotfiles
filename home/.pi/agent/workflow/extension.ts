@@ -1,5 +1,6 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 import { Type } from "typebox";
+import { formatCostReport, summarizeCost } from "./cost.ts";
 import { bounded } from "./process.ts";
 import { getRole, roles, timeoutFor } from "./roles.ts";
 import { runTasks, sumUsage } from "./runner.ts";
@@ -15,6 +16,12 @@ export default function workflow(pi: ExtensionAPI) {
     description: "Show workflow roles and their exact models",
     handler: async (_args, ctx) => {
       ctx.ui.notify(roles.map((role) => `${role.name} (${role.label}): ${role.provider}/${role.model} (${role.thinking}, ${role.access === "write" ? "implementation" : role.access === "diagnose" ? "diagnose (read-only + bash)" : "read-only"})`).join("\n"), "info");
+    },
+  });
+  pi.registerCommand("task-cost", {
+    description: "Show this session branch's model cost: parent vs subagents, cache use and costliest prompts",
+    handler: async (_args, ctx) => {
+      ctx.ui.notify(formatCostReport(summarizeCost(ctx.sessionManager.getBranch())), "info");
     },
   });
   pi.registerTool({

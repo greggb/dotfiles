@@ -281,7 +281,7 @@ export function sumUsage(items: Iterable<ChildUsage | undefined>): ChildUsage | 
   return total;
 }
 
-function isUsage(value: unknown): value is ChildUsage {
+export function isUsage(value: unknown): value is ChildUsage {
   if (!record(value) || !record(value.cost)) return false;
   return [value.input, value.output, value.cacheRead, value.cacheWrite, value.totalTokens,
     value.cost.input, value.cost.output, value.cost.cacheRead, value.cost.cacheWrite, value.cost.total]

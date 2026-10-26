@@ -30,7 +30,10 @@ ambiguous optional fields when providers convert schemas to strict tool calling.
 Use `cwd` on an individual task to select another directory. Paths resolve from
 the parent's cwd. Supply enough task context: children do not inherit the parent
 transcript. Global prompt templates provide `/implement`, `/review`, and
-`/adversarial-review`. Division of labor: the parent (Opus) plans, adjudicates,
+`/adversarial-review`. `/task-cost` summarizes the current session branch's cost by
+source (parent model, each child role and model, other tools, compaction and cache
+warming) and by user prompt, from usage persisted in the session.
+Division of labor: the parent (Opus) plans, adjudicates,
 implements Direct-tier work itself and runs final verification; `explore` (Luna) maps code, `diagnose` (Luna) runs read-only
 command diagnosis (targeted tests, checks, logs and reproductions), and `implementer`
 (Sol) handles edits and test iteration. Diagnose reports commands with exit codes,
