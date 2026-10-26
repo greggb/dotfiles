@@ -23,12 +23,15 @@ criteria. When asked to challenge another review, label each evidence ID accept,
 or unresolved, explaining the evidence and what would resolve uncertainty. Never fabricate a
 finding, reproduction, test result or source reference to meet a quota. No findings is valid.`;
 
+const brief = "Keep the final report under 300 words; cite file:line instead of quoting code.";
+
 export const roles: readonly Role[] = [
   {
     name: "explore", label: "Luna", provider: "github-copilot", model: "gpt-6-luna", thinking: "medium", access: "read",
     prompt: `Explore code and documentation using read-only tools. Return a concise map of relevant
 files, established patterns and recommended next steps with references. Do not implement,
-run tests/builds, delegate or mutate anything, even if global instructions suggest cleanup.`,
+run tests/builds, delegate or mutate anything, even if global instructions suggest cleanup.
+${brief}`,
   },
   {
     name: "diagnose", label: "Luna", provider: "github-copilot", model: "gpt-6-luna", thinking: "medium", access: "diagnose",
@@ -38,7 +41,8 @@ files, install or upgrade packages, run formatters or fixers, or change configur
 Incidental caches/artifacts written by test runners are acceptable. If a fix is needed,
 describe it instead of applying it. Do not delegate or mutate external services.
 Return concise evidence: commands run with exit codes, the key output lines, and a diagnosis
-with confidence.`,
+with confidence.
+${brief}`,
   },
   {
     name: "implementer", label: "Sol", provider: "github-copilot", model: "gpt-6.1-sol", thinking: "medium", access: "write",
@@ -47,9 +51,10 @@ instructions and nearby patterns first. Preserve others' work. Run documented af
 regressions, typechecks and lint where applicable. Use available user skills when relevant.
 Do not ask permission for routine implementation or testing. Return real blockers rather than
 guessing cross-cutting decisions. Do not delegate, commit, push, publish, deploy or mutate
-external services. Report files, cleanup, exact verification commands/outcomes and limitations.`,
+external services. Report files, cleanup, exact verification commands/outcomes and limitations.
+${brief}`,
   },
-  { name: "reviewer", label: "Sol", provider: "github-copilot", model: "gpt-6.1-sol", thinking: "high", access: "read", prompt: review },
+  { name: "reviewer", label: "Sol", provider: "github-copilot", model: "gpt-6.1-sol", thinking: "high", access: "read", prompt: `${review}\nKeep the final report under 500 words; cite file:line instead of quoting code.` },
   // The grove-misc gateway buffers whole responses (no streaming events until completion) and
   // returns 500 "request timed out" on long generations. Pi retries and the model regenerates
   // the report, so keep final reports short.

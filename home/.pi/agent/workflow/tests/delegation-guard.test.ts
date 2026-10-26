@@ -62,7 +62,7 @@ test("defaults allow calls 1-5 and nudge from 6 without blocking across 50 calls
   for (let count = 1; count <= 50; count++) {
     assert.deepEqual(guard.onToolCall("bash", false), { action: count < 6 ? "allow" : "nudge", count });
   }
-  assert.equal(guard.reminder(6), "[delegation guard] 6 consecutive main-agent bash calls. Consider handing further discovery to explore, command-running diagnosis to diagnose, or edits/test iteration to implementer when that is faster or keeps large output out of the main context.");
+  assert.equal(guard.reminder(6), "[delegation guard] 6 consecutive main-agent bash calls. Consider handing broad discovery to explore or noisy test/log output to diagnose, or using targeted reads, when that keeps large output out of the main context.");
 });
 
 test("bash calls 1-2 allow, 3-8 nudge, 9+ stay blocked", () => {
@@ -74,7 +74,7 @@ test("bash calls 1-2 allow, 3-8 nudge, 9+ stay blocked", () => {
     if (count > 8) assert.equal(result.reason, `Delegation guard: ${count} consecutive bash calls in the main agent since the last subagent call or user message. Delegate discovery to explore, command-running diagnosis (tests, logs, reproductions) to diagnose, and edits/test iteration to implementer via subagent. Read-only git commands are not counted. The counter resets after a subagent call or the next user message.`);
     else assert.equal(result.reason, undefined);
   }
-  assert.equal(guard.reminder(3), "[delegation guard] 3 consecutive main-agent bash calls. Consider handing further discovery to explore, command-running diagnosis to diagnose, or edits/test iteration to implementer when that is faster or keeps large output out of the main context. Blocked after 8.");
+  assert.equal(guard.reminder(3), "[delegation guard] 3 consecutive main-agent bash calls. Consider handing broad discovery to explore or noisy test/log output to diagnose, or using targeted reads, when that keeps large output out of the main context. Blocked after 8.");
 });
 
 test("subagent and reset clear the counter; other tools do not count or reset", () => {

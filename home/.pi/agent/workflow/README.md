@@ -33,10 +33,11 @@ transcript. Global prompt templates provide `/implement`, `/review`, and
 `/adversarial-review`. `/task-cost` summarizes the current session branch's cost by
 source (parent model, each child role and model, other tools, compaction and cache
 warming) and by user prompt, from usage persisted in the session.
-Division of labor: the parent (Opus) plans, adjudicates,
-implements Direct-tier work itself and runs final verification; `explore` (Luna) maps code, `diagnose` (Luna) runs read-only
-command diagnosis (targeted tests, checks, logs and reproductions), and `implementer`
-(Sol) handles edits and test iteration. Diagnose reports commands with exit codes,
+Division of labor: the parent (Opus) plans, adjudicates, implements Direct and
+Standard work itself and runs final verification; `explore` (Luna) maps broad or
+unfamiliar code, `diagnose` (Luna) runs read-only command diagnosis (targeted tests,
+checks, logs and reproductions), and `implementer` (Sol) takes file-disjoint parallel
+chunks or mechanical edits with a precise spec. Diagnose reports commands with exit codes,
 key output and a diagnosis with confidence, describing needed fixes without applying them.
 Process scales to risk (Direct, Standard, High-risk tiers in `~/.pi/agent/AGENTS.md`):
 standard review is one `reviewer` (Sol) round; high-risk review runs `reviewer` (Sol) and
@@ -44,7 +45,7 @@ standard review is one `reviewer` (Sol) round; high-risk review runs `reviewer` 
 followed by one challenge round. Child turns are not persisted (`--no-session`),
 so parent session files show only the parent model; each subagent result header
 names the child's provider/model. The
-parent synthesizes findings and delegates verified fixes. There is no automatic
+parent synthesizes findings and fixes verified issues. There is no automatic
 continuation loop or retry orchestration. Routine coding and tests need no
 confirmation. Flagged side effects require a one-call interactive parent approval.
 

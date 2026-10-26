@@ -64,7 +64,7 @@ test("model-visible tasks-only requests validate and reach dispatch; obsolete du
   assert.match(definition.description, /Roles: explore, diagnose, implementer,/);
   assert.match(definition.description, /Deadlines: implementer 10 minutes, other roles 5 minutes;/);
   assert.match(definition.promptGuidelines[0], /^Always call subagent with \{tasks:/);
-  assert.match(definition.promptGuidelines[1], /^Children see none of your transcript and have no MCP access\./);
+  assert.match(definition.promptGuidelines[1], /^Children see none of your transcript and have no MCP access\. Point them at artifacts.+write the spec and acceptance criteria once to a file/);
   assert.ok(!definition.promptGuidelines.some((line) => /Scale process to risk|review round/.test(line)), "tier and review policy belongs in AGENTS.md");
   assert.equal(definition.executionMode, "sequential");
   assert.equal(definition.parameters.type, "object");

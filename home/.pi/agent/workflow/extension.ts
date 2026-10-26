@@ -30,7 +30,7 @@ export default function workflow(pi: ExtensionAPI) {
     promptSnippet: "Delegate autonomous implementation, exploration, or read-only review to isolated agents",
     promptGuidelines: [
       "Always call subagent with {tasks:[{agent,task,cwd?}]}, including for one child. Put agent/task/cwd only inside tasks items, never at the top level.",
-      "Children see none of your transcript and have no MCP access. Give self-contained briefs with paths, acceptance criteria, constraints, conventions, exact verification commands and any external research they need.",
+      "Children see none of your transcript and have no MCP access. Point them at artifacts instead of retelling: give paths, constraints, conventions and exact verification commands, and for multi-child work write the spec and acceptance criteria once to a file outside the repo and pass its path to every child. Judge results by the diff and test exit codes, not the child's summary.",
       "Parallelize independent work only; never send overlapping file edits to multiple implementers. Children cannot delegate recursively.",
       "Timeouts, stalls, auth/model errors and cancellations are real failures: never silently substitute models or claim success. Retry at most once, and only with a narrower or clarified brief (a stall may be retried once unchanged); otherwise report the blocker and ask before doing the work yourself. Failed runs include a transcript path for diagnosis.",
       "No commits, pushes, deployment or external mutations through delegation. The parent retains responsibility for scope, final verification (run final full test suites yourself) and user communication.",

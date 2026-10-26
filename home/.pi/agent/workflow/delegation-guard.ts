@@ -16,7 +16,7 @@ export function createDelegationGuard({ nudgeAt = 6, blockAt }: { nudgeAt?: numb
       return { action: count >= nudgeAt ? "nudge" : "allow", count };
     },
     reminder(count: number) {
-      return `[delegation guard] ${count} consecutive main-agent bash calls. Consider handing further discovery to explore, command-running diagnosis to diagnose, or edits/test iteration to implementer when that is faster or keeps large output out of the main context.` + (blockAt === undefined ? "" : ` Blocked after ${blockAt}.`);
+      return `[delegation guard] ${count} consecutive main-agent bash calls. Consider handing broad discovery to explore or noisy test/log output to diagnose, or using targeted reads, when that keeps large output out of the main context.` + (blockAt === undefined ? "" : ` Blocked after ${blockAt}.`);
     },
   };
 }

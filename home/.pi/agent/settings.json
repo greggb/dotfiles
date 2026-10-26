@@ -17,6 +17,7 @@
   ],
   "theme": "dark",
   "hideThinkingBlock": false,
+  "showCacheMissNotices": true,
   "quietStartup": false,
   "tuiMode": "fullscreen",
   "defaultProjectTrust": "ask",
@@ -45,7 +46,8 @@
     "/Users/gregg.brewster/.pi/agent/workflow/parent-policy.ts",
     "/Users/gregg.brewster/.pi/agent/footer/readable-footer.ts",
     "/Users/gregg.brewster/.pi/agent/housekeeping/shared-instructions.ts",
-    "/Users/gregg.brewster/.pi/agent/housekeeping/prune.ts"
+    "/Users/gregg.brewster/.pi/agent/housekeeping/prune.ts",
+    "/Users/gregg.brewster/.local/share/pi-runtime/node_modules/@earendil-works/pi-coding-agent/examples/extensions/handoff.ts"
   ],
   "skills": [
     "/Users/gregg.brewster/.claude/skills",
