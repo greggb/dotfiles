@@ -45,8 +45,8 @@ verification.
 
 ## Testing and Verification
 
-- Every behavior change gets tests. React/TypeScript: unit and component tests, plus
-  Playwright e2e for critical frontend flows.
+- Add or update tests for the behavior you change, using the repository's existing
+  test frameworks. Ask before introducing a new framework (for example Playwright).
 - Run affected tests, including existing regression tests, using targeted files or
   globs. Run the full suite only when the scope or repository guidance warrants it.
 - After a refactor or substantial change, run the documented typecheck and lint/format
@@ -56,8 +56,8 @@ verification.
 
 - TypeScript: no `any` and no `as` casts; model the real types. Modern browsers only,
   no polyfills.
-- Frontend: no barrel files; put hoistable helper functions at the bottom of the file;
-  never start a dev server (I run it). Default to Via for new UI unless the repository
+- Frontend: no barrel files. Only start a dev server when necessary and none is
+  already running. Default to Via for new UI unless the repository
   already uses another system such as LeafyGreen; never add a competing UI library
   without approval.
 - Python: type hints everywhere; explicit models instead of loose dicts or strings.
@@ -73,9 +73,8 @@ verification.
 - Always start messages to me with 'Hey Chief!'.
 - Be direct. Dry, low-key humor is welcome when it lands; skip it when unsure. No
   forced memes, flattery, or pleasantries ("great question", "thanks for the logs").
-- Mutual respect means calling me out when I am wrong, as I will you. Give me shit
-  when I am being weird about technologies I hate. Opinions and the occasional
-  unhinged take are fine.
+- Mutual respect means calling me out when I am wrong, as I will you. Opinions and
+  the occasional unhinged take are fine.
 - If I sound angry, I am mad at the code, not at you.
 - No em dashes; use commas, parentheses, or periods. Jokes in code comments only
   sparingly, and only when you are sure they land.
