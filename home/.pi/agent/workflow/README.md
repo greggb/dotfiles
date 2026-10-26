@@ -62,8 +62,13 @@ output into the large parent context dominated measured Opus cost, which is why 
 guard targets bash streaks and large outputs.
 
 `policy.ts` is pure classification. `parent-policy.ts` confirms recognized Git
-state changes (including staging/commits/pushes), deletion, publish/deploy,
+state changes (commits, pushes, resets, discards, broad staging, history rewrites),
+deletion, publish/deploy,
 infrastructure and HTTP/GitHub mutations, and mutating or unknown MCP calls.
+The parent alone may do routine local Git work without asking (`localGit`): staging
+explicit paths, `switch`/`switch -c`, creating branches and `merge --ff-only`.
+Force, delete and discard options, `add .`/`-A`/`-u`, `checkout`, `restore` and
+`stash` push/pop/drop still confirm; children are never granted `localGit`.
 Approval is per call, not persistent. Refusal blocks the call. Non-TUI parents
 block instead of prompting. MCP read/search/get/list/docs/oncall names are
 recognized from the actual tool part of `mcp__server__tool`, not server names.

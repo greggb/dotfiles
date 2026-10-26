@@ -20,7 +20,7 @@ export default function parentPolicy(pi: ExtensionAPI) {
     if (delegation.action === "nudge") nudges.set(event.toolCallId, delegation.count);
     if (event.toolName === "bash") capBashTimeout(event.input);
     const hints = pi.getAllTools().find((tool) => tool.name === event.toolName)?.annotations;
-    const decision = classify({ name: event.toolName, input: event.input, cwd: ctx.cwd, hints });
+    const decision = classify({ name: event.toolName, input: event.input, cwd: ctx.cwd, hints }, { localGit: true });
     if (decision.action === "allow") return undefined;
     if (decision.action === "deny") return { block: true, reason: decision.reason };
     if (ctx.mode !== "tui" || !ctx.hasUI) return { block: true, reason: `${decision.reason}. Requires interactive parent confirmation; no side effects were authorized.` };

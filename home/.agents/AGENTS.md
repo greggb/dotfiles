@@ -7,8 +7,7 @@ verification.
 ## Working Rules
 
 - Other agents or I may land changes mid-run: refresh context before summarizing or
-  editing. Treat git status and diffs as read-only; never revert or assume unexplained
-  changes were yours.
+  editing, and don't assume unexplained changes were yours.
 - Fix root causes, not symptoms. For new work: understand the architecture, check
   official docs for the recommended approach, read the existing code, then implement
   or bring me the tradeoffs.
@@ -27,10 +26,15 @@ verification.
 
 ## Safety
 
-- Run only read-only git commands (status, diff, log, show) unless told otherwise.
-- Commits, pushes, destructive git operations, deployments, publishing, and external
-  service mutations require my explicit authorization. Read-only and planning agents
-  must not perform them or delegate to agents that can.
+- Local git is fine (inspect, branch, stage, commit) with two limits. Commit only
+  your own task's changes: stage explicit paths (never `git add -A`/`.` or
+  `commit -a` with unrelated changes present), and only on a branch that belongs to
+  this task, never a default branch or an unrelated work-in-progress branch. Never
+  revert, reset, stash, or overwrite changes you didn't make.
+- Pushes (especially force pushes), history rewrites of shared commits,
+  deployments, publishing, and external service mutations require my explicit
+  authorization. Read-only and planning agents must not perform them or delegate to
+  agents that can.
 - New dependencies: choose a well-maintained, widely used option with a good API,
   then confirm with me before adding it.
 

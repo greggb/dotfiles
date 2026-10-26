@@ -193,6 +193,24 @@ test("narrow Git inspections do not pause, mutations still do", () => {
   for (const command of ["git branch new", "git branch --list --delete main", "git tag new", "git config user.name x", "git config --get user.name --unset-all", "git remote add origin url", "git remote set-url origin url", "git branch --show-current; git push", "git config --get user.name && git commit -m x"]) assert.equal(bash(command).action, "confirm", command);
 });
 
+test("parent local Git work runs without confirmation; children and risky forms still pause", () => {
+  const parent = (command: string) => classify({ name: "bash", input: { command }, cwd }, { localGit: true });
+  const routine = ["git add src/a.ts tests/a.test.ts", "git add ../shared/b.ts", "git add -- src/a.ts", "git -C /repo add docs/", "git switch main", "git switch -c feature/x",
+    "git switch --create feature/x --track origin/x", "git branch feature/x", "git branch feature/x main", "git branch", "git merge --ff-only origin/main",
+    "git stash list", "git stash show -p", "git add src/a.ts && git status --short", "git add src/a.ts\ngit status --short"];
+  for (const command of routine) {
+    assert.equal(parent(command).action, "allow", command);
+    if (!command.startsWith("git stash")) assert.equal(bash(command).action, "confirm", `child ${command}`);
+  }
+  for (const command of ["git add .", "git add ./*", "git add '*'", "git add :/", "git add ':/*'", "git add ./.", "git add ..", "git add ../", "git add \\*", "git add /", "git add -A", "git add --all", "git add -u", "git add -f ignored.txt", "git add -- .", "git add",
+    "git merge --ff-only", "git add src/a.ts\ngit commit -m x",
+    "git commit -m x", "git commit -am x", "git push", "git push --force-with-lease", "git reset --hard", "git clean -fd", "git restore src/a.ts",
+    "git checkout -- .", "git checkout main", "git rebase main", "git switch -f main", "git switch --discard-changes main", "git switch -C main",
+    "git branch -D x", "git branch -m x y", "git branch -f x HEAD~1", "git merge main", "git merge --no-ff main", "git stash", "git stash pop",
+    "git stash drop", "git stash clear", "git tag v1", "git tag -d v1", "git remote add o url", "git config user.name x", "git cherry-pick abc",
+    "git add src/a.ts && git commit -m x", "git switch main; git push"]) assert.equal(parent(command).action, "confirm", command);
+});
+
 test("native filesystem secret checks are exact, not a blanket project read ban", () => {
   for (const path of [".env", ".env.local", "auth.json", "/home/u/.ssh/id_ed25519", "/home/u/.aws", "cert.pem", "private.key", ".config/gcloud"]) {
     assert.equal(isSecretPath(path), true, path);

@@ -11,6 +11,9 @@ export interface PolicyCall {
   hints?: Hints;
 }
 export interface Decision { action: "allow" | "deny" | "confirm"; reason: string }
+// localGit: the interactive parent may do routine local Git work (scoped staging, switching,
+// creating branches, fast-forward merges) without confirmation. Children never get this.
+export interface PolicyOptions { localGit?: boolean }
 
 // Mirrors the normalizePath options in Pi's tools/path-utils.js (checked by
 // tests/pi-api.test.mjs against the installed runtime). Lexical only,
@@ -44,7 +47,7 @@ export function isSecretPath(path: string): boolean {
     /(?:^|\/)\.config\/gcloud(?:\/|$)/.test(normalized);
 }
 
-export function classify(call: PolicyCall): Decision {
+export function classify(call: PolicyCall, options: PolicyOptions = {}): Decision {
   if (["read", "edit", "write", "grep", "find", "ls"].includes(call.name)) {
     const path = typeof call.input.path === "string" ? call.input.path :
       typeof call.input.file_path === "string" ? call.input.file_path : ".";
@@ -58,7 +61,7 @@ export function classify(call: PolicyCall): Decision {
     }
     return { action: "allow", reason: "Ordinary filesystem tool" };
   }
-  if (call.name === "bash") return classifyShell(typeof call.input.command === "string" ? call.input.command : "");
+  if (call.name === "bash") return classifyShell(typeof call.input.command === "string" ? call.input.command : "", options);
   if (call.name.startsWith("mcp__")) {
     const separator = call.name.indexOf("__", 5);
     const tool = separator > 5 ? call.name.slice(separator + 2).toLowerCase() : undefined;
@@ -82,7 +85,9 @@ export function capBashTimeout(input: Record<string, unknown>): void {
   input.timeout = typeof timeout === "number" && Number.isFinite(timeout) && timeout > 0 ? Math.min(timeout, 300) : 300;
 }
 
-function classifyShell(command: string): Decision {
+function classifyShell(command: string, { localGit = false }: PolicyOptions): Decision {
+  // Newlines separate commands; keep them as boundaries so arguments don't bleed across lines.
+  command = command.replace(/\r?\n/g, " ; ");
   // Heuristic recognition of common commands, not shell interpretation or a security boundary.
   // Inspect quoted script bodies and substitutions too, without rejecting all compositions.
   const tokens = shellWords(command);
@@ -96,7 +101,8 @@ function classifyShell(command: string): Decision {
     if (["rm", "rmdir", "unlink", "trash", "shred"].includes(token) || (token === "find" && tail.some((item) => item === "-delete"))) return confirm("Filesystem deletion");
     if (token === "git") {
       const command = gitCommand(tail);
-      if (command && riskyGit.has(command.verb) && !isGitInspection(command.verb, command.args)) return confirm(`Git ${command.verb} changes repository state`);
+      if (command && riskyGit.has(command.verb) && !isGitInspection(command.verb, command.args) &&
+        !(localGit && isLocalGitWork(command.verb, command.args))) return confirm(`Git ${command.verb} changes repository state`);
     }
     if (["pnpm", "npm", "yarn", "uv", "cargo", "twine", "docker"].includes(token) && tail.some((item) => ["publish", "deploy", "push", "unpublish"].includes(item))) return confirm("Publish/deploy operation");
     if (["kubectl", "helm", "terraform", "pulumi"].includes(token) && tail.some((item) => ["apply", "delete", "destroy", "install", "upgrade", "uninstall", "up", "set", "patch", "replace", "create", "scale", "rollout"].includes(item))) return confirm("Infrastructure mutation");
@@ -322,6 +328,20 @@ function isGitInspection(verb: string, args: string[]): boolean {
     const remaining = args.filter((arg) => !["--local", "--global", "--system", "--worktree", "--includes", "--no-includes"].includes(arg));
     return ["--get", "--get-all", "--get-regexp"].includes(remaining[0] ?? "") && remaining.length >= 2 && remaining.length <= 3 && remaining.slice(1).every((arg) => !arg.startsWith("-"));
   }
+  if (verb === "stash") return ["list", "show"].includes(args[0] ?? "");
+  return false;
+}
+
+// Routine local work that cannot discard or sweep up others' changes. Anything with options
+// beyond the listed ones (force, delete, discard, broad staging) still asks.
+function isLocalGitWork(verb: string, args: string[]): boolean {
+  const options = args.filter((arg) => arg.startsWith("-") && arg !== "--");
+  const operands = args.filter((arg) => !arg.startsWith("-"));
+  if (verb === "add") return options.length === 0 && operands.length > 0 &&
+    operands.every((path) => !/^[.:/\\*]*$/.test(path));
+  if (verb === "switch") return options.every((arg) => ["-c", "--create", "--track", "--no-track"].includes(arg));
+  if (verb === "branch") return options.length === 0 && operands.length <= 2;
+  if (verb === "merge") return options.length === 1 && options[0] === "--ff-only" && operands.length === 1;
   return false;
 }
 
