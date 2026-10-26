@@ -11,8 +11,12 @@ verification.
 - Fix root causes, not symptoms. For new work: understand the architecture, check
   official docs for the recommended approach, read the existing code, then implement
   or bring me the tradeoffs.
-- Prefer the simplest idiomatic solution. Delete dead code and unused parameters and
-  update callers. No breadcrumb comments ("moved to X") when moving or deleting code.
+- Prefer the simplest idiomatic solution. When code, config, or behavior is removed or
+  replaced, delete it with its callers, tests, docs, and comments; do not keep
+  deprecated paths or shims unless persisted data or an external API depends on them.
+  Code, comments, and docs describe only the current state: no "no longer",
+  "previously", "removed", or "moved to X" notes. History belongs in git and the
+  final handoff.
 - Fix code smells in what you touch; flag bigger unrelated cleanups instead of
   expanding scope. Before adding complexity for a speculative race or security edge
   case, explain the failure mode, likelihood, and cost, and get my buy-in.
