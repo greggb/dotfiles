@@ -157,9 +157,61 @@ defaults write com.apple.mail DisableInlineAttachmentViewing -bool true
 # Apple Intelligence                                                           #
 ###############################################################################
 
-# Disable Apple Intelligence. Valid on macOS 15.3+ ARM Macs; harmless as a
-# preference on unsupported versions.
+# The real opt-out happens in Setup Assistant ("Not now" on Apple Intelligence),
+# which records com.apple.CloudSubscriptionFeatures.optIn opted_out_buddy and
+# skips the model download. Everything below is belt-and-suspenders.
+
+# Unverified blog key; not present on macOS 27. Kept because it is harmless.
 defaults write com.apple.CloudSubscriptionFeatures.optIn "545129924" -bool false
+
+# Disable notification summaries.
+# Mirrors System Settings > Notifications > Summarize Notifications.
+defaults write com.apple.ncprefs summarize_previews -bool false
+
+# Disable Genmoji suggestions in the emoji picker.
+defaults write com.apple.EmojiPreferences GenmojiSuggestions -bool false
+
+###############################################################################
+# Siri                                                                        #
+###############################################################################
+
+# Disable Siri, its menu bar item, and "Hey Siri".
+defaults write com.apple.assistant.support "Assistant Enabled" -bool false
+defaults write com.apple.Siri StatusMenuVisible -bool false
+defaults write com.apple.Siri VoiceTriggerUserEnabled -bool false
+defaults write com.apple.assistant.backedup "Cloud Sync Enabled" -bool false
+
+# Globe/fn key does nothing (no accidental dictation, emoji, or Siri).
+defaults write com.apple.HIToolbox AppleFnUsageType -int 0
+
+###############################################################################
+# Privacy and telemetry                                                       #
+###############################################################################
+
+# Disable personalized ads and the advertising identifier.
+defaults write com.apple.AdLib allowApplePersonalizedAdvertising -bool false
+defaults write com.apple.AdLib allowIdentifierForAdvertising -bool false
+defaults write com.apple.AdLib forceLimitAdTracking -bool true
+
+# Do not send diagnostics to Apple or app developers.
+# Mirrors System Settings > Privacy & Security > Analytics & Improvements.
+DIAG_PLIST="/Library/Application Support/CrashReporter/DiagnosticMessagesHistory.plist"
+sudo defaults write "$DIAG_PLIST" AutoSubmit -bool false 2>/dev/null || true
+sudo defaults write "$DIAG_PLIST" ThirdPartyDataSubmit -bool false 2>/dev/null || true
+
+# Disable Game Center.
+defaults write com.apple.gamed Disabled -bool true
+
+###############################################################################
+# Desktop and window manager                                                  #
+###############################################################################
+
+# Hide desktop widgets in standard and Stage Manager modes.
+defaults write com.apple.WindowManager StandardHideWidgets -bool true
+defaults write com.apple.WindowManager StageManagerHideWidgets -bool true
+
+# Clicking the wallpaper does not hide all windows.
+defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool false
 
 ###############################################################################
 # Notes                                                                       #
@@ -176,12 +228,14 @@ defaults write com.apple.CloudSubscriptionFeatures.optIn "545129924" -bool false
 
 for app in \
   "cfprefsd" \
+  "ControlCenter" \
   "Dock" \
   "Finder" \
   "Mail" \
   "Music" \
   "Safari" \
-  "SystemUIServer"; do
+  "SystemUIServer" \
+  "WindowManager"; do
   killall "$app" > /dev/null 2>&1 || true
 done
 

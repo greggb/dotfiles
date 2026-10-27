@@ -109,6 +109,14 @@ if [ -f "$DOTFILES/Brewfile.vscode" ]; then
   fi
 fi
 
+# Optional: remove preinstalled Apple apps (GarageBand loops alone are several GB)
+read -rp "Remove GarageBand, iMovie, Keynote, Pages, Numbers? [y/N] " RMAPPS
+if [[ "$RMAPPS" =~ ^[Yy] ]]; then
+  sudo rm -rf /Applications/{GarageBand,iMovie,Keynote,Pages,Numbers}.app \
+    "/Library/Application Support/GarageBand" \
+    "/Library/Audio/Apple Loops"
+fi
+
 # Symlinks via stow
 mkdir -p "$HOME/.config"
 "$HOMEBREW_PREFIX/bin/stow" --restow --target="$HOME" --dir="$DOTFILES" home

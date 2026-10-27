@@ -1,3 +1,13 @@
+### Before running: Setup Assistant
+
+These choices can't be scripted and matter more than anything in `.macos`:
+
+- Apple Intelligence: **Not now** (skips the multi-GB model download)
+- Siri: off
+- Screen Time: skip
+- Share Mac Analytics / Share with app developers: off
+- Location Services: on, then trim individual apps later
+
 ### Setup
 
 ```sh
@@ -17,7 +27,8 @@ The install script:
 - Symlinks `home/` -> `~/` and `config/` -> `~/.config/` via stow
 - Symlinks VS Code settings
 - Sets fish as the default shell
-- Applies macOS system preferences
+- Optionally removes GarageBand, iMovie, and iWork
+- Applies macOS system preferences (including Siri / Apple Intelligence / telemetry off)
 - Attempts node setup via mise and npm globals (oxlint, oxfmt, biome)
 
 ### Re-applying after changes
@@ -55,6 +66,12 @@ brew bundle --file Brewfile.media   # ffmpeg, yt-dlp
 # Clear the default dock apps
 defaults write com.apple.dock persistent-apps -array && killall Dock
 ```
+
+### After running: manual checks
+
+- System Settings > General > Login Items & Extensions: remove background agents added by casks
+- System Settings > Spotlight: turn off unused categories; add `~/code` under Search Privacy
+- Finding the key for a new toggle: `defaults read > /tmp/a; <flip toggle>; defaults read > /tmp/b; diff /tmp/a /tmp/b`
 
 ### Notes
 
