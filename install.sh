@@ -8,52 +8,24 @@ OP_AGENT_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.s
 
 # SSH keys live in 1Password (never on disk); its agent signs with Touch ID.
 setup_ssh() {
-  if ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
-    return 0
-  fi
+  ssh -T git@github.com 2>&1 | grep -q "successfully authenticated" && return 0
 
-  echo "Setting up SSH key for GitHub (1Password SSH agent)..."
   open -a 1Password
   until SSH_AUTH_SOCK="$OP_AGENT_SOCK" ssh-add -L 2>/dev/null | grep -q '^ssh-ed25519 '; do
-    echo "In 1Password:"
-    echo "  1. Settings > Developer > enable \"Use the SSH agent\""
-    echo "  2. New Item > SSH Key > Add Private Key > Generate New Key (Ed25519), in your Personal vault"
-    read -rp "Press enter when done... " _
+    read -rp "In 1Password: enable Settings > Developer > SSH agent, create an Ed25519 SSH Key item. Enter when done... " _
   done
-
-  # Pin GitHub to one key so the agent doesn't offer every key it holds.
   mkdir -p "$HOME/.ssh" && chmod 700 "$HOME/.ssh"
-  SSH_AUTH_SOCK="$OP_AGENT_SOCK" ssh-add -L | grep '^ssh-ed25519 ' | head -1 > "$HOME/.ssh/github_ed25519.pub"
+  SSH_AUTH_SOCK="$OP_AGENT_SOCK" ssh-add -L | grep -m1 '^ssh-ed25519 ' > "$HOME/.ssh/github_ed25519.pub"
 
-  touch "$HOME/.ssh/config" && chmod 600 "$HOME/.ssh/config"
-  if ! grep -q "github_ed25519.pub" "$HOME/.ssh/config"; then
-    cat >> "$HOME/.ssh/config" <<'EOF'
-Host github.com
-  Hostname ssh.github.com
-  Port 443
-  ServerAliveInterval 20
-  User git
-  IdentityFile ~/.ssh/github_ed25519.pub
-  IdentitiesOnly yes
-EOF
-  fi
-  if ! grep -q "IdentityAgent.*1password" "$HOME/.ssh/config"; then
-    cat >> "$HOME/.ssh/config" <<'EOF'
-
-Host *
-  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-EOF
-  fi
+  # GitHub over 443 for networks that block port 22.
+  grep -qs "ssh.github.com" "$HOME/.ssh/config" ||
+    printf 'Host github.com\n  Hostname ssh.github.com\n  Port 443\n  User git\n\n' >> "$HOME/.ssh/config"
+  grep -qs "IdentityAgent" "$HOME/.ssh/config" ||
+    printf 'Host *\n  IdentityAgent "%s"\n' "$OP_AGENT_SOCK" >> "$HOME/.ssh/config"
 
   pbcopy < "$HOME/.ssh/github_ed25519.pub"
-  echo "Public key copied to clipboard (add it as an Authentication key)."
   open https://github.com/settings/ssh/new
-  read -rp "Press enter once the key is added to GitHub... " _
-
-  if ! ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
-    echo "SSH authentication failed. Check the key was added and try again." >&2
-    exit 1
-  fi
+  read -rp "Add it on GitHub as Authentication AND Signing key. Enter when done... " _
 }
 
 find_brew() {
