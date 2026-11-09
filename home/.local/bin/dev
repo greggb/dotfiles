@@ -74,9 +74,7 @@ tmux split-window -h -p 35 -t "${SESSION_NAME}:1" -c "$TARGET_DIR"
 tmux split-window -v -p 50 -t "${SESSION_NAME}:1.2" -c "$TARGET_DIR"
 
 # Start apps (bottom shell stays clean)
-AGENT_LAUNCH="$AGENT_CMD"
-[ "$AGENT_CMD" = "claude" ] && AGENT_LAUNCH="claude --model claude-opus-4-6"
-tmux send-keys -t "${SESSION_NAME}:1.2" "$AGENT_LAUNCH" Enter
+tmux send-keys -t "${SESSION_NAME}:1.2" "$AGENT_CMD" Enter
 tmux send-keys -t "${SESSION_NAME}:1.1" "nvim ." Enter
 
 # Focus the nvim pane

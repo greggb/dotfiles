@@ -59,6 +59,12 @@ sudo nvram "StartupMute=%01" 2>/dev/null || true
 defaults write com.apple.screensaver askForPassword -int 1
 defaults write com.apple.screensaver askForPasswordDelay -int 0
 
+# Enable the application firewall with stealth mode (no replies to pings/probes).
+# Mirrors System Settings > Network > Firewall.
+SOCKETFILTERFW=/usr/libexec/ApplicationFirewall/socketfilterfw
+sudo "$SOCKETFILTERFW" --setglobalstate on >/dev/null 2>&1 || true
+sudo "$SOCKETFILTERFW" --setstealthmode on >/dev/null 2>&1 || true
+
 ###############################################################################
 # Finder                                                                      #
 ###############################################################################

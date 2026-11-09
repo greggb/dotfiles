@@ -21,7 +21,7 @@
 	# delete squash merged branches
 	ds="!git checkout -q main && git for-each-ref refs/heads/ "--format=%(refname:short)" | while read branch; do mergeBase=$(git merge-base main $branch) && [[ $(git cherry main $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == "-"* ]] && git branch -D $branch; done"
 	# check for merged branches
-	check="!git checkout -q main && git for-each-ref refs/heads/ '--format=%(refname:short)' | while read branch; do mergeBase=$(git merge-base main $branch) && [[ $(git cherry main $(git commit-tree $(git rev-parse '$branch^{tree}') -p $mergeBase -m _)) == '-'* ]] && echo '$branch is merged into main and can be deleted"; done"
+	check="!git checkout -q main && git for-each-ref refs/heads/ '--format=%(refname:short)' | while read branch; do mergeBase=$(git merge-base main $branch) && [[ $(git cherry main $(git commit-tree $(git rev-parse \"$branch^{tree}\") -p $mergeBase -m _)) == '-'* ]] && echo \"$branch is merged into main and can be deleted\"; done"
 	# delete merged branches
 	cleanup="!git checkout -q main && git for-each-ref refs/heads/ "--format=%(refname:short)" | while read branch; do mergeBase=$(git merge-base main $branch) && [[ $(git cherry main $(git commit-tree $(git rev-parse "$branch^{tree}") -p $mergeBase -m _)) == "-"* ]] && git branch -D $branch; done"
 	# fixup previous commit
@@ -50,6 +50,7 @@
 
 [commit]
 	verbose = true
+	gpgsign = true
 
 [rerere]
 	enabled = true
@@ -60,6 +61,7 @@
 
 [tag]
 	sort = -version:refname
+	gpgSign = true
 
 [apply]
 	# Detect whitespace errors when applying a patch
@@ -142,11 +144,30 @@
 [branch]
 	sort = -committerdate
 
+# Fetch public repos anonymously over HTTPS; only pushes use the SSH key.
 [url "git@github.com:"]
-	insteadOf = https://github.com/
+	pushInsteadOf = https://github.com/
+	pushInsteadOf = git://github.com/
 	insteadOf = github:
+[url "https://github.com/"]
 	insteadOf = git://github.com/
 [url "git@gist.github.com:"]
+	pushInsteadOf = https://gist.github.com/
+	pushInsteadOf = git://gist.github.com/
 	insteadOf = gst:
 	insteadOf = gist:
+[url "https://gist.github.com/"]
 	insteadOf = git://gist.github.com/
+
+# Sign commits and tags with the 1Password-held SSH key (written by install.sh).
+[user]
+	signingkey = ~/.ssh/github_ed25519.pub
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	program = /Applications/1Password.app/Contents/MacOS/op-ssh-sign
+	allowedSignersFile = ~/.config/git/allowed_signers
+
+# Verify the integrity of every object fetched or received.
+[transfer]
+	fsckObjects = true

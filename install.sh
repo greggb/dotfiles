@@ -4,32 +4,49 @@ set -e
 DOTFILES="$(cd "$(dirname "$0")" && pwd)"
 export HOMEBREW_NO_ANALYTICS=1
 
+OP_AGENT_SOCK="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+
+# SSH keys live in 1Password (never on disk); its agent signs with Touch ID.
 setup_ssh() {
   if ssh -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
     return 0
   fi
 
-  echo "Setting up SSH key for GitHub..."
+  echo "Setting up SSH key for GitHub (1Password SSH agent)..."
+  open -a 1Password
+  until SSH_AUTH_SOCK="$OP_AGENT_SOCK" ssh-add -L 2>/dev/null | grep -q '^ssh-ed25519 '; do
+    echo "In 1Password:"
+    echo "  1. Settings > Developer > enable \"Use the SSH agent\""
+    echo "  2. New Item > SSH Key > Add Private Key > Generate New Key (Ed25519), in your Personal vault"
+    read -rp "Press enter when done... " _
+  done
 
-  if [ ! -f "$HOME/.ssh/id_ed25519" ]; then
-    mkdir -p "$HOME/.ssh" && chmod 700 "$HOME/.ssh"
-    ssh-keygen -t ed25519 -C "$GIT_EMAIL" -f "$HOME/.ssh/id_ed25519"
-  fi
-
-  ssh-add --apple-use-keychain "$HOME/.ssh/id_ed25519"
+  # Pin GitHub to one key so the agent doesn't offer every key it holds.
+  mkdir -p "$HOME/.ssh" && chmod 700 "$HOME/.ssh"
+  SSH_AUTH_SOCK="$OP_AGENT_SOCK" ssh-add -L | grep '^ssh-ed25519 ' | head -1 > "$HOME/.ssh/github_ed25519.pub"
 
   touch "$HOME/.ssh/config" && chmod 600 "$HOME/.ssh/config"
-  if ! grep -q "IdentityFile.*id_ed25519" "$HOME/.ssh/config"; then
+  if ! grep -q "github_ed25519.pub" "$HOME/.ssh/config"; then
     cat >> "$HOME/.ssh/config" <<'EOF'
+Host github.com
+  Hostname ssh.github.com
+  Port 443
+  ServerAliveInterval 20
+  User git
+  IdentityFile ~/.ssh/github_ed25519.pub
+  IdentitiesOnly yes
+EOF
+  fi
+  if ! grep -q "IdentityAgent.*1password" "$HOME/.ssh/config"; then
+    cat >> "$HOME/.ssh/config" <<'EOF'
+
 Host *
-  AddKeysToAgent yes
-  UseKeychain yes
-  IdentityFile ~/.ssh/id_ed25519
+  IdentityAgent "~/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
 EOF
   fi
 
-  pbcopy < "$HOME/.ssh/id_ed25519.pub"
-  echo "Public key copied to clipboard."
+  pbcopy < "$HOME/.ssh/github_ed25519.pub"
+  echo "Public key copied to clipboard (add it as an Authentication key)."
   open https://github.com/settings/ssh/new
   read -rp "Press enter once the key is added to GitHub... " _
 
@@ -60,8 +77,6 @@ find_brew() {
 read -rp "Git name: " GIT_NAME
 read -rp "Git email: " GIT_EMAIL
 
-setup_ssh
-
 # Homebrew
 if ! BREW="$(find_brew)"; then
   /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
@@ -81,6 +96,9 @@ fi
 
 # Core packages (includes stow, mise, fish, etc.)
 "$BREW" bundle --file="$DOTFILES/Brewfile"
+
+# SSH (needs the 1Password cask from the Brewfile)
+setup_ssh
 
 # Optional: work tools (go, helm, kubectl)
 if [ -f "$DOTFILES/Brewfile.work" ]; then
@@ -125,6 +143,11 @@ mkdir -p "$HOME/.config"
 git config -f "$HOME/.gitconfig.local" user.name "$GIT_NAME"
 git config -f "$HOME/.gitconfig.local" user.email "$GIT_EMAIL"
 
+# Let `git log --show-signature` verify this machine's commit signatures.
+mkdir -p "$HOME/.config/git"
+printf '%s namespaces="git" %s\n' "$GIT_EMAIL" "$(cut -d' ' -f1,2 "$HOME/.ssh/github_ed25519.pub")" \
+  > "$HOME/.config/git/allowed_signers"
+
 # Fish shell
 FISH="$HOMEBREW_PREFIX/bin/fish"
 if ! grep -qF "$FISH" /etc/shells; then
@@ -141,5 +164,9 @@ if ! "$HOMEBREW_PREFIX/bin/mise" install --quiet; then
 elif ! "$HOMEBREW_PREFIX/bin/mise" exec node -- npm install -g oxlint oxfmt @biomejs/biome; then
   echo "npm global install failed. Continuing so the rest of the bootstrap can finish." >&2
 fi
+
+# Don't run package install scripts (a common malware vector); set in ~/.npmrc
+# rather than stowing it, since `npm login` writes tokens there.
+"$HOMEBREW_PREFIX/bin/mise" exec node -- npm config set ignore-scripts true || true
 
 echo "Done. Open a new terminal to start using fish."

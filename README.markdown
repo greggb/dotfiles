@@ -19,10 +19,10 @@ cd ~/code/dotfiles
 The install script:
 
 - Prompts for git name/email
-- Generates an SSH key and adds it to GitHub (skipped if already configured)
 - Installs Homebrew (if missing)
 - Disables Homebrew analytics
 - Runs `brew bundle` (core tools) using Homebrew directly, even before `brew` is on your shell path
+- Sets up GitHub SSH via the 1Password SSH agent (key stays in 1Password, never on disk; skipped if already configured)
 - Optionally installs work tools (`Brewfile.work`), media tools (`Brewfile.media`), and VS Code extensions (`Brewfile.vscode`)
 - Symlinks `home/` -> `~/` and `config/` -> `~/.config/` via stow
 - Symlinks VS Code settings

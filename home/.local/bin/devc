@@ -52,13 +52,10 @@ BASE_NAME="$(basename "$TARGET_DIR")"
 BASE_NAME="${BASE_NAME//[.:]/–}"
 WORKSPACE_NAME="dev/${BASE_NAME}-$(date +%s)"
 
-AGENT_LAUNCH="$AGENT_CMD"
-[ "$AGENT_CMD" = "claude" ] && AGENT_LAUNCH="claude --model claude-opus-4-6"
-
 # Layout: horizontal split 60/40; right column split vertically 50/50.
 # DFS pane order: 1 = nvim (left), 2 = agent (top-right), 3 = shell (bottom-right).
 LAYOUT=$(cat <<EOF
-{"direction":"horizontal","split":0.60,"children":[{"pane":{"surfaces":[{"type":"terminal","command":"nvim ."}]}},{"direction":"vertical","split":0.5,"children":[{"pane":{"surfaces":[{"type":"terminal","command":"${AGENT_LAUNCH}"}]}},{"pane":{"surfaces":[{"type":"terminal"}]}}]}]}
+{"direction":"horizontal","split":0.60,"children":[{"pane":{"surfaces":[{"type":"terminal","command":"nvim ."}]}},{"direction":"vertical","split":0.5,"children":[{"pane":{"surfaces":[{"type":"terminal","command":"${AGENT_CMD}"}]}},{"pane":{"surfaces":[{"type":"terminal"}]}}]}]}
 EOF
 )
 
