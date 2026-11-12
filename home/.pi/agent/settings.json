@@ -1,7 +1,7 @@
 {
   "$schema": "https://pi.dev/schemas/settings.schema.json",
   "defaultProvider": "github-copilot",
-  "defaultModel": "claude-opus-5.5",
+  "defaultModel": "gpt-6.1-sol",
   "defaultThinkingLevel": "high",
   "modelThinkingLevels": {
     "github-copilot/gpt-6-luna": "medium"
@@ -13,11 +13,14 @@
     "write",
     "grep",
     "find",
-    "ls"
+    "ls",
+    "web_search",
+    "web_fetch"
   ],
-  "theme": "dark",
+  "theme": "tokyo-night",
   "hideThinkingBlock": false,
   "showCacheMissNotices": true,
+  "cacheWarming": "streaming",
   "quietStartup": false,
   "tuiMode": "fullscreen",
   "defaultProjectTrust": "ask",
@@ -42,12 +45,13 @@
   "steeringMode": "one-at-a-time",
   "followUpMode": "one-at-a-time",
   "extensions": [
-    "/Users/gregg.brewster/.pi/agent/workflow/extension.ts",
-    "/Users/gregg.brewster/.pi/agent/workflow/parent-policy.ts",
+    "/Users/gregg.brewster/.pi/agent/essentials/guard.ts",
+    "/Users/gregg.brewster/.pi/agent/essentials/web.ts",
+    "/Users/gregg.brewster/.pi/agent/essentials/mode.ts",
     "/Users/gregg.brewster/.pi/agent/footer/readable-footer.ts",
     "/Users/gregg.brewster/.pi/agent/housekeeping/shared-instructions.ts",
     "/Users/gregg.brewster/.pi/agent/housekeeping/prune.ts",
-    "/Users/gregg.brewster/.local/share/pi-runtime/node_modules/@earendil-works/pi-coding-agent/examples/extensions/handoff.ts"
+    "/opt/homebrew/opt/pi-coding-agent/libexec/lib/node_modules/@earendil-works/pi-coding-agent/examples/extensions/handoff.ts"
   ],
   "skills": [
     "/Users/gregg.brewster/.claude/skills",
@@ -67,10 +71,15 @@
     "--",
     "npm"
   ],
+  "selfUpdateCommand": [
+    "/opt/homebrew/bin/brew",
+    "upgrade",
+    "pi-coding-agent"
+  ],
   "shellCommandPrefix": "eval \"$(/opt/homebrew/opt/mise/bin/mise env -s bash 2>/dev/null)\"",
   "terminal": {
     "showImages": true,
     "showTerminalProgress": true
   },
-  "lastChangelogVersion": "1.4.0"
+  "lastChangelogVersion": "1.5.2"
 }

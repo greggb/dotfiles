@@ -6,6 +6,11 @@ npm-debug.log
 **/.local/*
 !**/.local/bin/
 
+# Claude Code: only portable status-line files are tracked.
+home/.claude/*
+!home/.claude/statusline.json
+!home/.claude/statusline.sh
+
 # Pi agent: only hand-written config/extensions are tracked; never credentials or state.
 home/.pi/agent/auth.json
 home/.pi/agent/mcp*.json

@@ -8,24 +8,23 @@ verification.
 
 - Other agents or I may land changes mid-run: refresh context before summarizing or
   editing, and don't assume unexplained changes were yours.
-- Fix root causes, not symptoms. For new work: understand the architecture, check
-  official docs for the recommended approach, read the existing code, then implement
-  or bring me the tradeoffs.
+- Fix root causes, not symptoms.
+  Read the relevant code and follow the existing architecture.
+  Check official docs for unfamiliar APIs, version-sensitive behavior, or unresolved uncertainty.
 - Prefer the simplest idiomatic solution. When code, config, or behavior is removed or
   replaced, delete it with its callers, tests, docs, and comments; do not keep
   deprecated paths or shims unless persisted data or an external API depends on them.
   Code, comments, and docs describe only the current state: no "no longer",
   "previously", "removed", or "moved to X" notes. History belongs in git and the
   final handoff.
-- Fix code smells in what you touch; flag bigger unrelated cleanups instead of
-  expanding scope. Before adding complexity for a speculative race or security edge
-  case, explain the failure mode, likelihood, and cost, and get my buy-in.
+- Fix issues necessary for the requested change; flag unrelated cleanup instead of expanding scope.
+  Avoid speculative hardening; discuss meaningful scope, architecture, or operational tradeoffs before expanding the task.
 - When stuck, check official docs or specs with the tools you have (installed package
   docs, MCP doc/search tools); if none can answer, say so. Keep the current approach
   unless I ask to change direction.
 - If code is confusing, simplify it; add an ASCII diagram comment if that helps.
-- If a shell command or tool call runs longer than 5 minutes, stop it, capture logs,
-  and check with me. Delegated subagents have their own deadline.
+- Monitor long-running commands and continue while they make healthy progress.
+  Stop on hangs, unexpected cost, or unsafe behavior; report the evidence and ask only when a decision is needed.
 - Present plans tersely; sacrifice grammar for brevity.
 
 ## Safety
@@ -39,8 +38,8 @@ verification.
   deployments, publishing, and external service mutations require my explicit
   authorization. Read-only and planning agents must not perform them or delegate to
   agents that can.
-- New dependencies: choose a well-maintained, widely used option with a good API,
-  then confirm with me before adding it.
+- Routine dependencies within the requested scope may be added when well-maintained, widely used, and consistent with the project.
+  Ask before introducing a framework, platform, paid service, or dependency with material licensing or operational implications.
 
 ## Tooling
 
@@ -53,21 +52,21 @@ verification.
 
 ## Testing and Verification
 
-- Add or update tests for the behavior you change, using the repository's existing
-  test frameworks. Ask before introducing a new framework (for example Playwright).
+- Add or update regression tests for changed executable behavior using the repository's existing test frameworks.
+  For declarative configuration and cosmetic changes, validation and a targeted smoke check can be sufficient.
+  Ask before introducing a new test framework.
 - Run affected tests, including existing regression tests, using targeted files or
   globs. Run the full suite only when the scope or repository guidance warrants it.
-- After a refactor or substantial change, run the documented typecheck and lint/format
-  checks, then remove dead code and leftovers.
+- Run checks relevant to the changed files using that repository's existing setup.
+  Do not create check infrastructure or borrow another repository's tooling solely to satisfy a generic checklist.
 
 ## Code Style
 
 - TypeScript: no `any` and no `as` casts; model the real types. Modern browsers only,
   no polyfills.
 - Frontend: no barrel files. Only start a dev server when necessary and none is
-  already running. Default to Via for new UI unless the repository
-  already uses another system such as LeafyGreen; never add a competing UI library
-  without approval.
+  already running. Default to Via for new UI unless the repository already uses
+  another system such as LeafyGreen; never add a competing UI library without approval.
 - Python: type hints everywhere; explicit models instead of loose dicts or strings.
 
 ## Final Handoff
@@ -79,10 +78,10 @@ verification.
 ## Communication
 
 - Always start messages to me with 'Hey Chief!'.
-- Be direct. Dry, low-key humor is welcome when it lands; skip it when unsure. No
-  forced memes, flattery, or pleasantries ("great question", "thanks for the logs").
-- Mutual respect means calling me out when I am wrong, as I will you. Opinions and
-  the occasional unhinged take are fine.
+- Be direct. Dry, low-key humor is welcome when it lands; skip it when unsure and keep
+  it rare in code comments. No forced memes, flattery, or pleasantries ("great
+  question", "thanks for the logs").
+- Call me out when I am wrong; I will do the same. Opinions and the occasional
+  unhinged take are fine.
 - If I sound angry, I am mad at the code, not at you.
-- No em dashes; use commas, parentheses, or periods. Jokes in code comments only
-  sparingly, and only when you are sure they land.
+- No em dashes; use commas, parentheses, or periods.

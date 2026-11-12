@@ -1,120 +1,88 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { formatCwd, formatFooter, formatTokens, type FooterInput } from "../format.ts";
+import { footerSeparator, formatCwd, formatDuration, formatFooter, formatTokens, type FooterInput } from "../format.ts";
 
 const sample: FooterInput = {
-  cwd: "/Users/gregg.brewster/code/camarilla",
-  home: "/Users/gregg.brewster",
-  branch: "main",
-  sessionName: "Footer work",
-  model: { name: "Claude Opus 5.5", id: "claude-opus-5.5" },
-  thinking: "high",
-  context: { tokens: 172_000, window: 400_000, percent: 43.1 },
-  totals: { input: 1_200_000, output: 45_000, cacheRead: 3_400_000, cacheWrite: 200_000, cost: 4.21 },
-  cacheHitPercent: 92,
+  cwd: "/Users/gregg.brewster/code/camarilla", home: "/Users/gregg.brewster", branch: "main", sessionName: "Footer work",
+  model: { name: "Claude Opus 5.5", id: "claude-opus-5.5" }, thinking: "high",
+  context: { tokens: 172000, window: 400000, percent: 43.1 },
+  totals: { input: 1200000, output: 45000, cacheRead: 3400000, cacheWrite: 200000, cost: 4.21 },
+  cache: { hitPercent: 92, lastRequestAt: 1700000000000 }, now: 1700000030000,
+  git: { branch: "main", ahead: 0, behind: 0, staged: 0, modified: 0, untracked: 0 },
 };
-const full = "Claude Opus 5.5, high thinking  ·  context 43% of 400k  ·  1.2M tokens in, 45k out, 92% cached  ·  $4.21 spent";
-const noCost = "Claude Opus 5.5, high thinking  ·  context 43% of 400k  ·  1.2M tokens in, 45k out, 92% cached";
-const noCache = "Claude Opus 5.5, high thinking  ·  context 43% of 400k  ·  1.2M in, 45k out  ·  $4.21 spent";
-const shortTokens = "Claude Opus 5.5, high thinking  ·  context 43% of 400k  ·  1.2M in, 45k out";
-const noTokens = "Claude Opus 5.5, high thinking  ·  context 43% of 400k";
-const minimal = "Claude Opus 5.5  ·  context 43% of 400k";
 
-function line(input: FooterInput = sample, width = 160): string {
-  return formatFooter(input, width).segments.map((segment) => segment.text).join("  ·  ");
+function layout(input: FooterInput = sample, width = 200) {
+  return formatFooter(input, width, (text) => text.length);
+}
+function line(input: FooterInput = sample, width = 200): string {
+  return layout(input, width).map((section) => section.map((segment) => segment.text).join(" ")).join(footerSeparator);
+}
+function contextTone(percent: number | null): string | undefined {
+  return layout({ ...sample, context: { tokens: 1, window: 400000, percent } }).find((section) => section[0].text.startsWith("ctx "))?.[0].tone;
 }
 
-test("formatTokens matches built-in boundaries and rounding", () => {
-  const cases: [number, string][] = [
-    [0, "0"], [950, "950"], [999, "999"], [1000, "1.0k"], [1200, "1.2k"],
-    [9999, "10.0k"], [10000, "10k"], [45000, "45k"], [999999, "1000k"],
-    [1000000, "1.0M"], [1200000, "1.2M"], [9999999, "10.0M"],
-    [10000000, "10M"], [45000000, "45M"],
-  ];
+test("formatTokens preserves the established boundaries and rounding", () => {
+  const cases: [number, string][] = [[0, "0"], [999, "999"], [1000, "1.0k"], [9999, "10.0k"], [10000, "10k"], [999999, "1000k"], [1000000, "1.0M"], [9999999, "10.0M"], [10000000, "10M"]];
   for (const [input, expected] of cases) assert.equal(formatTokens(input), expected);
 });
-
-test("formatCwd substitutes home only at a path boundary", () => {
+test("home substitution respects path boundaries", () => {
   assert.equal(formatCwd("/home/me", "/home/me"), "~");
-  assert.equal(formatCwd("/home/me/code", "/home/me"), "~/code");
   assert.equal(formatCwd("/home/me/code", "/home/me/"), "~/code");
   assert.equal(formatCwd("/home/mean/code", "/home/me"), "/home/mean/code");
-  assert.equal(formatCwd("/code", "/home/me"), "/code");
-  assert.equal(formatCwd("/code"), "/code");
-  assert.equal(formatCwd("/code", ""), "/code");
   assert.equal(formatCwd("/code", "/"), "~/code");
+  assert.equal(formatCwd("/code"), "/code");
 });
-
-test("wide footer shows readable stats, location, branch and session", () => {
-  assert.equal(line(), full);
-  assert.equal(formatFooter(sample, 160).location, "~/code/camarilla on main · Footer work");
-  assert.equal(formatFooter({ ...sample, branch: null, sessionName: undefined }, 160).location, "~/code/camarilla");
+test("wide status bar uses one compact line with model, branch, context, timer and cost", () => {
+  assert.equal(line(), "[Claude Opus 5.5 · high] | camarilla |  main ✔ | ctx ▰▰▰▰▱▱▱▱▱▱ 43% /400k | cache 92% 30s ago | ~$4.21 | ↑1.2M ↓45k | Footer work");
+  assert.ok(line({ ...sample, thinking: "off" }).startsWith("[Claude Opus 5.5 · off]"));
+  assert.ok(line({ ...sample, thinking: undefined }).startsWith("[Claude Opus 5.5]"));
+  assert.ok(line({ ...sample, model: undefined, thinking: undefined }).startsWith("[no model]"));
 });
-
-test("thinking off, absent thinking, model name fallback and missing model", () => {
-  assert.ok(line({ ...sample, thinking: "off" }).startsWith("Claude Opus 5.5, thinking off  ·  "));
-  assert.ok(line({ ...sample, thinking: undefined }).startsWith("Claude Opus 5.5  ·  "));
-  assert.ok(line({ ...sample, model: { name: "", id: "model-id" } }).startsWith("model-id, high thinking"));
-  assert.ok(line({ ...sample, model: undefined, thinking: undefined }).startsWith("no model  ·  "));
+test("context progress is bounded and warning thresholds use unrounded percentages", () => {
+  assert.equal(contextTone(null), "dim");
+  assert.equal(contextTone(70), "success");
+  assert.equal(contextTone(70.01), "warning");
+  assert.equal(contextTone(90), "warning");
+  assert.equal(contextTone(90.01), "error");
+  assert.ok(line({ ...sample, context: undefined }).includes("ctx ?"));
+  assert.ok(line({ ...sample, context: { tokens: 0, window: 400000, percent: 0 } }).includes("▱▱▱▱▱▱▱▱▱▱ 0%"));
+  assert.ok(line({ ...sample, context: { tokens: 420000, window: 400000, percent: 105 } }).includes("▰▰▰▰▰▰▰▰▰▰ 105%"));
 });
-
-test("unknown context is recalculating, including missing context", () => {
-  for (const context of [undefined, { tokens: null, window: 400000, percent: null }]) {
-    const result = formatFooter({ ...sample, context }, 160);
-    assert.deepEqual(result.segments[1], { text: "context recalculating", tone: "dim" });
-  }
+test("unknown cache expiry shows request age, not an invented warm or cold state", () => {
+  assert.ok(line().includes("cache 92% 30s ago"));
+  assert.ok(line({ ...sample, now: sample.now + 90000 }).includes("cache 92% 2m0s ago"));
+  assert.ok(!line({ ...sample, now: sample.now + 3600000 }).includes("cold"));
+  assert.ok(line({ ...sample, cache: undefined }).includes("cache -"));
+  assert.ok(line({ ...sample, cache: { ...sample.cache, hitPercent: 0 } }).includes("cache 0%"));
 });
-
-test("context tones use strict 70 and 90 thresholds before display rounding", () => {
-  const cases: [number, string][] = [[0, "dim"], [70, "dim"], [70.01, "warning"], [90, "warning"], [90.01, "error"], [100, "error"]];
-  for (const [percent, tone] of cases) {
-    const context = { tokens: 1, window: 400000, percent };
-    assert.equal(formatFooter({ ...sample, context }, 160).segments[1]?.tone, tone);
-  }
+test("declared cache lifetime counts down, warns near expiry, and becomes cold", () => {
+  const cached = { ...sample, cache: { ...sample.cache, lifetimeSeconds: 300 } };
+  assert.ok(line(cached).includes("cache 92% ~4m30s left"));
+  const near = layout({ ...cached, now: 1700000241000 }).find((section) => section[0].text.startsWith("cache "));
+  assert.deepEqual(near, [{ text: "cache 92% ~59s left", tone: "warning" }]);
+  assert.ok(line({ ...cached, now: 1700000300000 }).includes("cache 92% cold"));
+  assert.equal(formatDuration(3660), "1h1m");
 });
-
-test("no token usage and zero cost omit their segments", () => {
-  const totals = { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: 0 };
-  assert.equal(line({ ...sample, totals }), noTokens);
-  assert.equal(formatFooter({ ...sample, totals }, 160).segments.length, 2);
-  assert.equal(line({ ...sample, totals: { ...sample.totals, cost: 0 } }), noCost);
+test("Git icons show separate staged, modified, untracked and divergence counts", () => {
+  const dirty = { ...sample, git: { branch: "feature/work", ahead: 2, behind: 1, staged: 3, modified: 4, untracked: 5 } };
+  assert.ok(line(dirty).includes(" feature/work ⇡2 ⇣1 ●3 ✚4 …5"));
+  assert.ok(!line(dirty).includes("✔"));
+  assert.ok(!line({ ...sample, git: undefined }).includes("✔"));
+  assert.ok(!line({ ...sample, git: undefined, branch: null }).includes(""));
 });
-
-test("cache clause needs cache traffic and a known rate; zero rate is known", () => {
-  assert.ok(!line({ ...sample, cacheHitPercent: undefined }).includes("cached"));
-  assert.ok(!line({ ...sample, totals: { ...sample.totals, cacheRead: 0, cacheWrite: 0 } }).includes("cached"));
-  assert.ok(line({ ...sample, cacheHitPercent: 0 }).includes("0% cached"));
-  assert.ok(line({ ...sample, cacheHitPercent: 91.6 }).includes("92% cached"));
-  assert.ok(line({ ...sample, totals: { ...sample.totals, input: 0, output: 0, cacheRead: 0 } }).includes("0 tokens in, 0 out, 92% cached"));
-});
-
-test("positive cost has two decimal places independently of token usage", () => {
-  assert.ok(line({ ...sample, totals: { ...sample.totals, cost: 1.2 } }).endsWith("$1.20 spent"));
-  assert.ok(line({ ...sample, totals: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: 0.001 } }).endsWith("$0.00 spent"));
-});
-
-test("width fitting drops cache, then cost, then tokens, then thinking", () => {
-  assert.equal(line(sample, full.length), full);
-  assert.equal(line(sample, full.length - 1), noCache);
-  assert.equal(line(sample, noCache.length), noCache);
-  assert.equal(line(sample, noCache.length - 1), shortTokens);
-  assert.equal(line(sample, shortTokens.length), shortTokens);
-  assert.equal(line(sample, shortTokens.length - 1), noTokens);
-  assert.equal(line(sample, noTokens.length), noTokens);
-  assert.equal(line(sample, noTokens.length - 1), minimal);
-});
-
-test("model and context are never dropped even at tiny widths", () => {
-  for (const width of [0, 1, 10, minimal.length - 1]) {
-    assert.equal(line(sample, width), minimal);
-    assert.equal(formatFooter(sample, width).segments.length, 2);
-  }
-});
-
-test("generated output contains no U+2014", () => {
-  for (let width = 0; width <= 160; width++) {
-    const result = formatFooter(sample, width);
-    assert.ok(!result.location.includes("\u2014"));
-    assert.ok(result.segments.every((segment) => !segment.text.includes("\u2014")));
-  }
+test("narrow panes shed optional information before the branch, context and cache timer", () => {
+  const compact = line(sample, 80);
+  assert.ok(!compact.includes("Footer work"));
+  assert.ok(!compact.includes("↑1.2M"));
+  assert.ok(!compact.includes("camarilla"));
+  assert.ok(compact.includes(" main ✔"));
+  assert.ok(compact.includes("ctx"));
+  assert.ok(compact.includes("30s ago"));
+  const busy = line({ ...sample, git: { branch: "pi-model-profiles", ahead: 2, behind: 1, staged: 14, modified: 8, untracked: 3 } }, 80);
+  assert.ok(busy.length <= 80);
+  assert.ok(busy.includes("pi-model-profiles"));
+  assert.ok(busy.includes("30s ago"));
+  const unused = { ...sample, totals: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0, cost: 0 }, cache: undefined };
+  assert.ok(!line(unused).includes("~$"));
+  assert.ok(!line(unused).includes("↑"));
 });

@@ -55,7 +55,7 @@ export default function prune(pi: ExtensionAPI) {
     void runPrune(ctx, 30, false);
   });
   pi.registerCommand("prune-sessions", {
-    description: "Prune sessions and subagent logs older than N days (default 30, minimum 1)",
+    description: "Prune sessions older than N days (default 30, minimum 1)",
     handler: async (args, ctx) => {
       const days = args.trim() ? Number(args.trim()) : 30;
       if (!Number.isFinite(days) || days < 1 || !Number.isFinite(days * dayMs)) {
@@ -73,12 +73,9 @@ async function runPrune(ctx: ExtensionContext, days: number, manual: boolean): P
     const root = join(agentDir(), "sessions");
     const current = ctx.sessionManager.getSessionFile();
     const keep = new Set(current ? [resolve(current)] : []);
-    const options = { maxAgeMs: days * dayMs, now: Date.now(), keep };
-    const sessions = await pruneOld({ ...options, root, recurse: true });
-    const logs = await pruneOld({ ...options, root: join(homedir(), ".pi", "agent", "subagent-logs"), recurse: false });
-    const errors = [...sessions.errors, ...logs.errors];
-    if (ctx.hasUI && (manual || sessions.deleted.length || logs.deleted.length || errors.length)) {
-      const summary = `Pruned ${sessions.deleted.length} sessions and ${logs.deleted.length} subagent logs older than ${days} days`;
+    const { deleted, errors } = await pruneOld({ maxAgeMs: days * dayMs, now: Date.now(), keep, root, recurse: true });
+    if (ctx.hasUI && (manual || deleted.length || errors.length)) {
+      const summary = `Pruned ${deleted.length} sessions older than ${days} days`;
       ctx.ui.notify(errors.length ? `${summary}\n${errors.length} errors:\n${errors.join("\n")}` : summary, errors.length ? "warning" : "info");
     }
   } catch (error) {

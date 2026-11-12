@@ -5,7 +5,7 @@ import { join } from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 
-const installed = join(process.env.PI_RUNTIME_DIR ?? join(homedir(), ".local/share/pi-runtime"), "node_modules/@earendil-works/pi-coding-agent/dist/");
+const installed = join(process.env.PI_RUNTIME_DIR ?? "/opt/homebrew/opt/pi-coding-agent/libexec/lib", "node_modules/@earendil-works/pi-coding-agent/dist/");
 const { loadExtensions } = await import(installed + "core/extensions/loader.js");
 const { normalizeBuildSystemPromptOptions, buildSystemPromptSections } = await import(installed + "core/system-prompt.js");
 const cwd = fileURLToPath(new URL("..", import.meta.url));
@@ -44,12 +44,9 @@ test("installed prune extension schedules once per process and commands prune fi
   const home = await fixture(t);
   const sessions = join(home, ".pi", "agent", "sessions");
   const perCwd = join(sessions, "--fixture--");
-  const logs = join(home, ".pi", "agent", "subagent-logs");
   await mkdir(perCwd, { recursive: true });
-  await mkdir(logs, { recursive: true });
   const current = await oldFile(perCwd, "current.jsonl");
   const oldSession = await oldFile(perCwd, "old.jsonl");
-  const oldLog = await oldFile(logs, "failure.jsonl");
   const sibling = await oldFile(join(home, ".pi", "agent"), "outside.jsonl");
   const notices = [];
   const notified = Promise.withResolvers();
@@ -71,14 +68,12 @@ test("installed prune extension schedules once per process and commands prune fi
     start({ type: "session_start", reason: "new" }, ctx);
     await notified.promise;
     assert.equal(notices.length, 1);
-    assert.match(notices[0].message, /Pruned 1 sessions and 1 subagent logs older than 30 days/);
+    assert.match(notices[0].message, /Pruned 1 sessions older than 30 days/);
     await assert.rejects(lstat(oldSession), { code: "ENOENT" });
-    await assert.rejects(lstat(oldLog), { code: "ENOENT" });
     assert.ok((await lstat(current)).isFile());
     assert.ok((await lstat(sibling)).isFile());
 
     const manualSession = await oldFile(sessions, "manual.jsonl", 3);
-    const manualLog = await oldFile(logs, "manual.jsonl", 3);
     const reloaded = await load("prune.ts");
     const [restart] = reloaded.handlers.get("session_start");
     assert.equal(restart({ type: "session_start", reason: "reload" }, ctx), undefined);
@@ -91,11 +86,10 @@ test("installed prune extension schedules once per process and commands prune fi
     assert.ok(notices.slice(1).every((notice) => notice.type === "warning"));
     await command.handler("2", rootCtx);
     await assert.rejects(lstat(manualSession), { code: "ENOENT" });
-    await assert.rejects(lstat(manualLog), { code: "ENOENT" });
     assert.ok((await lstat(sibling)).isFile(), "A sessions root must not become its parent");
     assert.ok((await lstat(current)).isFile());
     await command.handler("", rootCtx);
-    assert.match(notices.at(-1).message, /Pruned 0 sessions and 0 subagent logs older than 30 days/);
+    assert.match(notices.at(-1).message, /Pruned 0 sessions older than 30 days/);
     const count = notices.length;
     await command.handler("", { ...rootCtx, hasUI: false });
     assert.equal(notices.length, count);

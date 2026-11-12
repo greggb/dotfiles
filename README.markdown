@@ -46,6 +46,12 @@ their respective configs (fish functions in `config/fish/functions/`).
 shouldn't be committed (work credentials, kubernetes configs, git identity,
 etc.). These files are gitignored.
 
+### Claude Code status line
+
+Stow installs `~/.claude/statusline.sh` and the status-line-only fragment `~/.claude/statusline.json`.
+Keep `~/.claude/settings.json` private; it is not managed by this repository.
+For a new setup, merge only the fragment's `statusLine` entry into that private file, or pass the fragment with Claude's `--settings` option.
+
 ### Optional installs
 
 ```sh
